@@ -18,10 +18,13 @@
     <ClCompile Include="Source.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="vc.c">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vc.h">
-      <Filter>Arquivos de Recurso</Filter>
+      <Filter>Arquivos de Origem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
