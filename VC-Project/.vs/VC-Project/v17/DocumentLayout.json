@@ -7,12 +7,18 @@
       "RelativeMoniker": "D:0:0:{B667EF03-676C-44EC-8F0F-D8B24BC58068}|VC-Project\\VC-Project.vcxproj|solutionrelative:VC-Project\\Source.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{B667EF03-676C-44EC-8F0F-D8B24BC58068}|VC-Project\\VC-Project.vcxproj|C:\\Users\\Eduardo\\Documents\\GitHub\\VC-Project\\VC-Project\\VC-Project\\vc.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{B667EF03-676C-44EC-8F0F-D8B24BC58068}|VC-Project\\VC-Project.vcxproj|solutionrelative:VC-Project\\vc.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eduardo\\AppData\\Local\\Temp\\29f1e701-f7eb-43eb-a8c6-9d7a69714b59_AulasVC.zip.b59\\vc.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{B667EF03-676C-44EC-8F0F-D8B24BC58068}|VC-Project\\VC-Project.vcxproj|C:\\Users\\Eduardo\\Documents\\GitHub\\VC-Project\\VC-Project\\VC-Project\\vc.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{B667EF03-676C-44EC-8F0F-D8B24BC58068}|VC-Project\\VC-Project.vcxproj|solutionrelative:VC-Project\\vc.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B667EF03-676C-44EC-8F0F-D8B24BC58068}|VC-Project\\VC-Project.vcxproj|C:\\Users\\Eduardo\\Documents\\GitHub\\VC-Project\\VC-Project\\VC-Project\\vc.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{B667EF03-676C-44EC-8F0F-D8B24BC58068}|VC-Project\\VC-Project.vcxproj|solutionrelative:VC-Project\\vc.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Eduardo\\Downloads\\Origem.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,30 +28,56 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
+              "Title": "vc.c",
+              "DocumentMoniker": "C:\\Users\\Eduardo\\AppData\\Local\\Temp\\29f1e701-f7eb-43eb-a8c6-9d7a69714b59_AulasVC.zip.b59\\vc.c",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\AppData\\Local\\Temp\\29f1e701-f7eb-43eb-a8c6-9d7a69714b59_AulasVC.zip.b59\\vc.c",
+              "ToolTip": "C:\\Users\\Eduardo\\AppData\\Local\\Temp\\29f1e701-f7eb-43eb-a8c6-9d7a69714b59_AulasVC.zip.b59\\vc.c [Somente Leitura]",
+              "RelativeToolTip": "..\\..\\..\\..\\AppData\\Local\\Temp\\29f1e701-f7eb-43eb-a8c6-9d7a69714b59_AulasVC.zip.b59\\vc.c [Somente Leitura]",
+              "ViewState": "AQIAAK8EAAAAAAAAAAAAAPQGAAA5AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2024-05-24T23:43:04.359Z",
+              "EditorCaption": " [Somente Leitura]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Origem.cpp",
+              "DocumentMoniker": "C:\\Users\\Eduardo\\Downloads\\Origem.cpp",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\Downloads\\Origem.cpp",
+              "ToolTip": "C:\\Users\\Eduardo\\Downloads\\Origem.cpp",
+              "RelativeToolTip": "..\\..\\..\\..\\Downloads\\Origem.cpp",
+              "ViewState": "AQIAANUAAAAAAAAAAAAAAHsAAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-24T23:24:18.572Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "vc.h",
               "DocumentMoniker": "C:\\Users\\Eduardo\\Documents\\GitHub\\VC-Project\\VC-Project\\VC-Project\\vc.h",
               "RelativeDocumentMoniker": "VC-Project\\vc.h",
               "ToolTip": "C:\\Users\\Eduardo\\Documents\\GitHub\\VC-Project\\VC-Project\\VC-Project\\vc.h",
               "RelativeToolTip": "VC-Project\\vc.h",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAAADQAAAA6AAAA",
+              "ViewState": "AQIAABsAAAAAAAAAAAAAADQAAAA6AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-05-24T19:42:00.099Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "vc.c",
               "DocumentMoniker": "C:\\Users\\Eduardo\\Documents\\GitHub\\VC-Project\\VC-Project\\VC-Project\\vc.c",
               "RelativeDocumentMoniker": "VC-Project\\vc.c",
               "ToolTip": "C:\\Users\\Eduardo\\Documents\\GitHub\\VC-Project\\VC-Project\\VC-Project\\vc.c",
               "RelativeToolTip": "VC-Project\\vc.c",
-              "ViewState": "AQIAAMAAAAAAAAAAAAAqwG8CAAABAAAA",
+              "ViewState": "AQIAABgAAAAAAAAAAAAkwEMBAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
               "WhenOpened": "2024-05-24T19:40:04.527Z",
               "EditorCaption": ""
@@ -58,7 +90,7 @@
               "RelativeDocumentMoniker": "VC-Project\\Source.cpp",
               "ToolTip": "C:\\Users\\Eduardo\\Documents\\GitHub\\VC-Project\\VC-Project\\VC-Project\\Source.cpp",
               "RelativeToolTip": "VC-Project\\Source.cpp",
-              "ViewState": "AQIAAF0AAAAAAAAAAAAiwHMAAAAAAAAA",
+              "ViewState": "AQIAAHYAAAAAAAAAAAAqwNgAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-24T16:23:17.162Z",
               "EditorCaption": ""
