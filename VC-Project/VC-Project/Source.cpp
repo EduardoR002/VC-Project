@@ -211,7 +211,7 @@ int main(void) {
 		cv::Mat green_mask_mat(green_mask->height, green_mask->width, CV_8UC1, green_mask->data);
 
 		// Mostra a máscara em uma janela separada
-		cv::imshow("Blue Mask", green_mask_mat);
+		cv::imshow("Green Mask", green_mask_mat);
 
 #pragma endregion
 
@@ -255,9 +255,6 @@ int main(void) {
 		cv::imshow("Blue Mask", blue_mask_mat);
 
 #pragma endregion
-
-
-	
 
 		// Exibe a frame
 		cv::imshow("VC - VIDEO", frame);
