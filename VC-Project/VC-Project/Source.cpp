@@ -144,6 +144,7 @@ int main(void) {
 		IVC* image_4 = vc_image_new(video.width, video.height, 1, 255);
 		IVC* image_5 = vc_image_new(video.width, video.height, 1, 255);
 
+<<<<<<< HEAD
 		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels vermelhos.
 		IVC* red_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
 
@@ -166,9 +167,23 @@ int main(void) {
 
 		//  Esta função converte a codificação de cores da imagem image_2 de BGR (azul-verde-vermelho) para RGB (vermelho-verde-azul).
 		vc_convert_bgr_to_rgb(image_2, image_2); 
+=======
+		IVC* red_segmented_image = vc_image_new(video.width, video.height, 1, 255);
+		IVC* brown_segmented_image = vc_image_new(video.width, video.height, 1, 255);
+		IVC* black_segmented_image = vc_image_new(video.width, video.height, 1, 255);
+		IVC* orange_segmented_image = vc_image_new(video.width, video.height, 1, 255);
+		IVC* green_segmented_image = vc_image_new(video.width, video.height, 1, 255);
+		IVC* blue_segmented_image = vc_image_new(video.width, video.height, 1, 255);
+
+		// Guarda a memória da imagem
+		memcpy(image_2->data, frame.data, video.width * video.height * 3);
+
+		// Converte a codificação de cores BGR (video original) para RGB
+		vc_convert_bgr_to_rgb(image_2, image_2);
+>>>>>>> 2bae725f2e7cfe1dfd6439210cdc201f900e38f6
 
 		// Converte a codificação de cores RGB para HSV
-		vc_rgb_to_hsv(image_2, image_3); 
+		vc_rgb_to_hsv(image_2, image_3);
 
 #pragma region Cor das Resistências
 
@@ -193,7 +208,7 @@ int main(void) {
 		}
 
 		/*IVC* mask = vc_image_new(video.width, video.height, 1, 255);
-		
+
 		// Copia os pixels da imagem fechada para a máscara
 		for (int y = 0; y < video.height; y++) {
 			for (int x = 0; x < video.width; x++) {
@@ -220,7 +235,7 @@ int main(void) {
 		//vc_hsv_segmentation(image_3, brown_segmented_image, 25, 43, 32, 63, 44, 86); 
 		//vc_hsv_segmentation(image_3, black_segmented_image, 25, 43, 32, 63, 44, 86);
 		//vc_hsv_segmentation(image_3, orange_segmented_image, 25, 43, 32, 63, 44, 86);
-
+/*
 #pragma region Cor Verde
 
 		vc_hsv_segmentation(image_3, green_segmented_image, 85, 105, 33, 53, 35, 57);
@@ -235,7 +250,7 @@ int main(void) {
 
 		// Etiquetagem de blobs na imagem fechada
 		OVC* green_blob = nullptr;
-		int green_nblob = 0; 
+		int green_nblob = 0;
 		green_blob = vc_binary_blob_labelling(green_closed_image, green_segmented_image, &green_nblob);
 
 		IVC* green_mask = vc_image_new(video.width, video.height, 1, 255);
@@ -302,8 +317,49 @@ int main(void) {
 		cv::imshow("Blue Mask", blue_mask_mat);
 
 #pragma endregion
+		*/
+		/*
+#pragma region Cor Vermelha
+		// Segmentação HSV para a cor vermelha
+		vc_hsv_segmentation(image_3, red_segmented_image, 0, 8, 50, 65, 60, 80);
 
-#pragma region Cor Castanha
+		// Abertura binária da imagem segmentada
+		IVC* red_opened_image = vc_image_new(video.width, video.height, 1, 255);
+		vc_binary_open(red_segmented_image, red_opened_image, 3, 3);
+
+		// Fechamento binário da imagem aberta
+		IVC* red_closed_image = vc_image_new(video.width, video.height, 1, 255);
+		vc_binary_close(red_opened_image, red_closed_image, 3, 3);
+
+		// Etiquetagem de blobs na imagem fechada
+		OVC* red_blob = nullptr;
+		int red_nblob = 0;
+		red_blob = vc_binary_blob_labelling(red_closed_image, red_segmented_image, &red_nblob);
+
+		IVC* red_mask = vc_image_new(video.width, video.height, 1, 255);
+
+		// Copia os pixels da imagem segmentada para a máscara
+		for (int y = 0; y < video.height; y++) {
+			for (int x = 0; x < video.width; x++) {
+				int index = y * video.width + x;
+				// Se o pixel na imagem segmentada for vermelho (0), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
+				if (red_closed_image->data[index] == 0) {
+					red_mask->data[index] = 0;
+				}
+				else {
+					red_mask->data[index] = 255;
+				}
+			}
+		}
+
+		// Cria uma matriz OpenCV para exibir a máscara
+		cv::Mat red_mask_mat(red_mask->height, red_mask->width, CV_8UC1, red_mask->data); \
+
+			// Mostra a máscara em uma janela separada
+			cv::imshow("Red Mask", red_mask_mat);
+#pragma endregion
+*/
+
 
 #pragma region Cor Castanho
 
@@ -345,8 +401,6 @@ int main(void) {
 
 		// Mostra a máscara castanha em uma janela separada
 		cv::imshow("Brown Mask", brown_mask_mat);
-
-#pragma endregion
 
 #pragma endregion
 
