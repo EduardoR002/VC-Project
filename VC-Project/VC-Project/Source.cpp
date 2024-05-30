@@ -144,7 +144,6 @@ int main(void) {
 		IVC* image_4 = vc_image_new(video.width, video.height, 1, 255);
 		IVC* image_5 = vc_image_new(video.width, video.height, 1, 255);
 
-<<<<<<< HEAD
 		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels vermelhos.
 		IVC* red_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
 
@@ -167,20 +166,13 @@ int main(void) {
 
 		//  Esta função converte a codificação de cores da imagem image_2 de BGR (azul-verde-vermelho) para RGB (vermelho-verde-azul).
 		vc_convert_bgr_to_rgb(image_2, image_2); 
-=======
-		IVC* red_segmented_image = vc_image_new(video.width, video.height, 1, 255);
-		IVC* brown_segmented_image = vc_image_new(video.width, video.height, 1, 255);
-		IVC* black_segmented_image = vc_image_new(video.width, video.height, 1, 255);
-		IVC* orange_segmented_image = vc_image_new(video.width, video.height, 1, 255);
-		IVC* green_segmented_image = vc_image_new(video.width, video.height, 1, 255);
-		IVC* blue_segmented_image = vc_image_new(video.width, video.height, 1, 255);
 
 		// Guarda a memória da imagem
 		memcpy(image_2->data, frame.data, video.width * video.height * 3);
 
 		// Converte a codificação de cores BGR (video original) para RGB
 		vc_convert_bgr_to_rgb(image_2, image_2);
->>>>>>> 2bae725f2e7cfe1dfd6439210cdc201f900e38f6
+
 
 		// Converte a codificação de cores RGB para HSV
 		vc_rgb_to_hsv(image_2, image_3);
