@@ -2,8 +2,7 @@
 * This is a repository created to carry out the project for the curricular unit Computer Vision.  (C Language)
 
 ## Goals:
-- Create a program in C;
-- Develop a solution to a real everyday problem;
+- Create a program in C for analisate a video;
 
 ## Developers:
 - Eduardo Rebelo()-> Degree Student in Computer Systems Engineering - IPCA
