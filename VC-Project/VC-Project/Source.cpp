@@ -110,11 +110,14 @@ int main(void) {
 		cv::GaussianBlur(frame, frame, cv::Size(5, 5), 0);
 
 
-		/* Número da frame a processar */
+		// Obtém o índice da frame atual no vídeo utilizando o método get() do objeto capture. Ele retorna a posição atual do vídeo em termos de número de frames
 		video.nframe = (int)capture.get(cv::CAP_PROP_POS_FRAMES);
 
-		/* Exemplo de inserção texto na frame */
+
+		//Exemplo de inserção texto na frame, cria uma string com o texto "RESOLUCAO: ", converte a largura e altura do vídeo em pixels para uma string
 		str = std::string("RESOLUCAO: ").append(std::to_string(video.width)).append("x").append(std::to_string(video.height));
+
+		//  Adiciona texto à frame do vídeo, e recebe como parametros, o frame onde vai ser inserido, a string a inserir, as coordenadas deste, tipo e tamanho da fonte, cor e espessura da linha do texto
 		cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
 		cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
 		str = std::string("TOTAL DE FRAMES: ").append(std::to_string(video.ntotalframes));
@@ -126,26 +129,42 @@ int main(void) {
 		str = std::string("N. DA FRAME: ").append(std::to_string(video.nframe));
 		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
 		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
+		/* Mesmo processo de adição de texto até aqui */
 
 
-		// Cria uma nova imagem IVC
+		/*Código abaixo cria várias imagens IVC para armazenar diferentes tipos de segmentações de imagem. Cada imagem IVC é uma estrutura de dados que contém informações sobre a imagem, como largura,
+		altura, número de canais de cor e o próprio buffer de pixels. */
+		
+		// Cria uma imagem colorida com 3 canais de cor (RGB) e alocada com 255 bytes para cada canal, ou seja, 24 bits por pixel (8 bits por canal). Esta imagem é destinada a armazenar frames de vídeo.
 		IVC* image = vc_image_new(video.width, video.height, 3, 255);
 		IVC* image_2 = vc_image_new(video.width, video.height, 3, 255);
 		IVC* image_3 = vc_image_new(video.width, video.height, 3, 255);
+
+		// Cria uma imagem em escala de cinza com apenas um canal de cor (nível de cinza) e alocada com 255 bytes para o canal, ou seja, 8 bits por pixel.
 		IVC* image_4 = vc_image_new(video.width, video.height, 1, 255);
 		IVC* image_5 = vc_image_new(video.width, video.height, 1, 255);
 
+		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels vermelhos.
 		IVC* red_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
+
+		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels castanhos
 		IVC* brown_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
+		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels pretos
 		IVC* black_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
+
+		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels laranjas
 		IVC* orange_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
+
+		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels verdes
 		IVC* green_segmented_image = vc_image_new(video.width, video.height, 1, 255);  
+
+		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels azuis
 		IVC* blue_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
 
-		// Guarda a memória da imagem
+		// Guarda a memória da imagem, copia os dados de pixels da frame do vídeo para a imagem image_2, permitindo que ela contenha o conteúdo visual da frame atual do vídeo
 		memcpy(image_2->data, frame.data, video.width* video.height * 3);
 
-		// Converte a codificação de cores BGR (video original) para RGB
+		//  Esta função converte a codificação de cores da imagem image_2 de BGR (azul-verde-vermelho) para RGB (vermelho-verde-azul).
 		vc_convert_bgr_to_rgb(image_2, image_2); 
 
 		// Converte a codificação de cores RGB para HSV
@@ -283,6 +302,97 @@ int main(void) {
 		cv::imshow("Blue Mask", blue_mask_mat);
 
 #pragma endregion
+
+#pragma region Cor Castanha
+
+#pragma region Cor Castanho
+
+		// Segmentação HSV para a cor castanho
+		vc_hsv_segmentation(image_3, brown_segmented_image, 10, 30, 20, 180, 20, 100);
+
+		// Abertura binária da imagem segmentada
+		IVC* brown_opened_image = vc_image_new(video.width, video.height, 1, 255);
+		vc_binary_open(brown_segmented_image, brown_opened_image, 3, 3);
+
+		// Fechamento binário da imagem aberta
+		IVC* brown_closed_image = vc_image_new(video.width, video.height, 1, 255);
+		vc_binary_close(brown_opened_image, brown_closed_image, 3, 3);
+
+		// Etiquetagem de blobs na imagem fechada
+		OVC* brown_blob = nullptr;
+		int brown_nblob = 0;
+		brown_blob = vc_binary_blob_labelling(brown_closed_image, brown_segmented_image, &brown_nblob);
+
+		// Cria uma máscara para a cor castanho
+		IVC* brown_mask = vc_image_new(video.width, video.height, 1, 255);
+
+		// Copia os pixels da imagem segmentada para a máscara
+		for (int y = 0; y < video.height; y++) {
+			for (int x = 0; x < video.width; x++) {
+				int index = y * video.width + x;
+				// Se o pixel na imagem segmentada for castanho (0), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
+				if (brown_closed_image->data[index] == 0) {
+					brown_mask->data[index] = 255;
+				}
+				else {
+					brown_mask->data[index] = 0;
+				}
+			}
+		}
+
+		// Cria uma matriz OpenCV para exibir a máscara castanha
+		cv::Mat brown_mask_mat(brown_mask->height, brown_mask->width, CV_8UC1, brown_mask->data);
+
+		// Mostra a máscara castanha em uma janela separada
+		cv::imshow("Brown Mask", brown_mask_mat);
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region Cor Preto
+
+		// Segmentação HSV para a cor preta
+		vc_hsv_segmentation(image_3, black_segmented_image, 0, 180, 0, 255, 0, 30);
+
+		// Abertura binária da imagem segmentada
+		IVC* black_opened_image = vc_image_new(video.width, video.height, 1, 255);
+		vc_binary_open(black_segmented_image, black_opened_image, 3, 3);
+
+		// Fechamento binário da imagem aberta
+		IVC* black_closed_image = vc_image_new(video.width, video.height, 1, 255);
+		vc_binary_close(black_opened_image, black_closed_image, 3, 3);
+
+		// Etiquetagem de blobs na imagem fechada
+		OVC* black_blob = nullptr;
+		int black_nblob = 0;
+		black_blob = vc_binary_blob_labelling(black_closed_image, black_segmented_image, &black_nblob);
+
+		// Cria uma máscara para a cor preta
+		IVC* black_mask = vc_image_new(video.width, video.height, 1, 255);
+
+		// Copia os pixels da imagem segmentada para a máscara
+		for (int y = 0; y < video.height; y++) {
+			for (int x = 0; x < video.width; x++) {
+				int index = y * video.width + x;
+				// Se o pixel na imagem segmentada for preto (0), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
+				if (black_closed_image->data[index] == 0) {
+					black_mask->data[index] = 255;
+				}
+				else {
+					black_mask->data[index] = 0;
+				}
+			}
+		}
+
+		// Cria uma matriz OpenCV para exibir a máscara preta
+		cv::Mat black_mask_mat(black_mask->height, black_mask->width, CV_8UC1, black_mask->data);
+
+		// Mostra a máscara preta em uma janela separada
+		cv::imshow("Black Mask", black_mask_mat);
+
+#pragma endregion
+
 
 		// Exibe a frame
 		cv::imshow("VC - VIDEO", frame);
