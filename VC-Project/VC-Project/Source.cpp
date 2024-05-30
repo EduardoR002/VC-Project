@@ -10,19 +10,25 @@ extern "C" {
 #include "vc.h"
 }
 
-
+// Função vc_timer que mede e exibe o tempo decorrido entre chamadas consecutivas.
 void vc_timer(void) {
+
+	// A variável "running" é um booleano que indica se o temporizador está em execução.
 	static bool running = false;
+	// A variável "previousTime" armazena o tempo do ponto anterior no tempo(quando a função foi chamada pela última vez).
 	static std::chrono::steady_clock::time_point previousTime = std::chrono::steady_clock::now();
 
+	// Se running é false, significa que a função está sendo chamada pela primeira vez. A variável running é então definida como true para indicar que o temporizador está agora em execução.
 	if (!running) {
 		running = true;
 	}
 	else {
+		//Tempo Atual: currentTime é capturado usando std::chrono::steady_clock::now()
 		std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
+		//Tempo Decorrido: elapsedTime é a diferença entre currentTime e previousTime
 		std::chrono::steady_clock::duration elapsedTime = currentTime - previousTime;
 
-		// Tempo em segundos.
+		// Conversão para Segundos: time_span converte elapsedTime para uma duração em segundos.
 		std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(elapsedTime);
 		double nseconds = time_span.count();
 
@@ -32,11 +38,16 @@ void vc_timer(void) {
 	}
 }
 
-
+// Função main
 int main(void) {
-	// Vídeo
+
+	// Variável inicializada com o nome do vídeo, este array é utilizado para armazenar o caminho/nome do arquivo de vídeo que será processado
 	char videofile[20] = "video_resistors.mp4";
+
+	// Objeto para captura de vídeo, este objeto será utilizado para abrir, ler e manipular o vídeo especificado.
 	cv::VideoCapture capture;
+
+	// Estrutura para armazenar informações do vídeo
 	struct
 	{
 		int width, height;
@@ -44,48 +55,58 @@ int main(void) {
 		int fps;
 		int nframe;
 	} video;
-	// Outros
+
+
+	// Outras variáveis que vão ser usadas mais á frente
 	std::string str;
 	int key = 0;
 
+
+
 	/* Leitura de vídeo de um ficheiro */
-	/* NOTA IMPORTANTE:
-	O ficheiro video.avi deverá estar localizado no mesmo directório que o ficheiro de código fonte.
-	*/
-	capture.open(videofile);
+	/* NOTA IMPORTANTE: O ficheiro video.avi deverá estar localizado no mesmo directório que o ficheiro de código fonte. */
+
+	// Tenta abrir o arquivo de vídeo, e caso não consiga apresenta uma mensagem ao utilizador a informar o erro
+	if (!capture.open(videofile)) {
+		std::cerr << "Erro ao abrir o ficheiro de vídeo!" << std::endl;
+		return -1;
+	}
 
 	/* Em alternativa, abrir captura de vídeo pela Webcam #0 */
 	//capture.open(0, cv::CAP_DSHOW); // Pode-se utilizar apenas capture.open(0);
 
-	/* Verifica se foi possível abrir o ficheiro de vídeo */
-	if (!capture.isOpened())
-	{
-		std::cerr << "Erro ao abrir o ficheiro de vídeo!\n";
-		return 1;
-	}
 
-	/* Número total de frames no vídeo */
+	// Obtém o número total de frames  no vídeo 
 	video.ntotalframes = (int)capture.get(cv::CAP_PROP_FRAME_COUNT);
-	/* Frame rate do vídeo */
+
+	// Obtém a taxa de frames por segundo (fps) do vídeo
 	video.fps = (int)capture.get(cv::CAP_PROP_FPS);
-	/* Resolução do vídeo */
+
+	// Obtém a largura do vídeo em pixels
 	video.width = (int)capture.get(cv::CAP_PROP_FRAME_WIDTH);
+
+	// Obtém a altura do vídeo em pixels
 	video.height = (int)capture.get(cv::CAP_PROP_FRAME_HEIGHT);
 
-	/* Cria uma janela para exibir o vídeo */
+	// Cria uma janela para exibir o vídeo 
 	cv::namedWindow("VC - VIDEO", cv::WINDOW_AUTOSIZE);
 
-	/* Inicia o timer */
+	// Inicia um temporizador para medir o tempo decorrido entre chamadas consecutivas, útil para monitorar o desempenho do processamento de vídeo
 	vc_timer();
 
+	// Declara uma matriz frame para armazenar cada frame do vídeo.
 	cv::Mat frame;
+
+	// Inicia um loop que continua até que a tecla 'q' seja pressionada.
 	while (key != 'q') {
-		/* Leitura de uma frame do vídeo */
+
+		// Lê o próximo frame do vídeo e o armazena na matriz frame.
 		capture.read(frame);
 
-		/* Verifica se conseguiu ler a frame */
+		// Verifica se conseguiu ler o frame , se o frame estiver vazio, indica que o vídeo chegou ao seu final ou houve algum erro na leitura.
 		if (frame.empty()) break;
 
+		// Aplica um filtro de desfoque gaussiano ao frame. Isso suaviza a imagem, reduzindo o ruído e detalhes excessivos
 		cv::GaussianBlur(frame, frame, cv::Size(5, 5), 0);
 
 
