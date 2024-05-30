@@ -239,6 +239,7 @@ int main(void) {
 
 
 // Região pra manipular a identificação da cor verde nas resistências
+		
 #pragma region Cor Verde
 
 		vc_hsv_segmentation(image_3, green_segmented_image, 85, 105, 33, 53, 35, 57);
@@ -408,6 +409,7 @@ int main(void) {
 #pragma endregion
 
 // Região pra manipular a identificação da cor laranja nas resistências
+
 #pragma region Cor Laranja
 		// Segmentação HSV para a cor laranja
 		vc_hsv_segmentation(image_3, orange_segmented_image,6, 10, 65, 80, 70, 93);
@@ -491,7 +493,6 @@ int main(void) {
 		// Mostra a máscara castanha em uma janela separada
 		cv::imshow("Brown Mask", brown_mask_mat);
 #pragma endregion
-
 		// Exibe a frame
 		cv::imshow("VC - VIDEO", frame);
 
