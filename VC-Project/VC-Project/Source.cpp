@@ -453,7 +453,7 @@ int main(void) {
 #pragma region Cor Castanho
 
 		// Segmentação HSV para a cor castanho
-		vc_hsv_segmentation(image_3, brown_segmented_image, 4, 19, 37, 46, 35, 50);
+		vc_hsv_segmentation(image_3, brown_segmented_image, 11, 26, 26, 46, 30, 50);
 
 		// Abertura binária da imagem segmentada
 		IVC* brown_opened_image = vc_image_new(video.width, video.height, 1, 255);
@@ -490,9 +490,7 @@ int main(void) {
 
 		// Mostra a máscara castanha em uma janela separada
 		cv::imshow("Brown Mask", brown_mask_mat);
-
 #pragma endregion
-
 
 		// Exibe a frame
 		cv::imshow("VC - VIDEO", frame);
