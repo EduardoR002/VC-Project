@@ -161,21 +161,30 @@ int main(void) {
 		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels azuis
 		IVC* blue_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
 
+
 		// Guarda a memória da imagem, copia os dados de pixels da frame do vídeo para a imagem image_2, permitindo que ela contenha o conteúdo visual da frame atual do vídeo
 		memcpy(image_2->data, frame.data, video.width* video.height * 3);
+
 
 		//  Esta função converte a codificação de cores da imagem image_2 de BGR (azul-verde-vermelho) para RGB (vermelho-verde-azul).
 		vc_convert_bgr_to_rgb(image_2, image_2); 
 
-		// Guarda a memória da imagem
+
+		// Copia os dados do quadro de vídeo (frame) para a estrutura de imagem (image_2)
+		// O tamanho dos dados copiados é calculado multiplicando a largura, altura e 3 (bytes por pixel)
 		memcpy(image_2->data, frame.data, video.width * video.height * 3);
 
-		// Converte a codificação de cores BGR (video original) para RGB
+
+		// Converte a codificação de cores BGR (Azul-Verde-Vermelho) para RGB (Vermelho-Verde-Azul)
+		// Os dados da imagem são convertidos diretamente na estrutura image_2
 		vc_convert_bgr_to_rgb(image_2, image_2);
 
-		// Converte a codificação de cores RGB para HSV
+
+		// Converte a codificação de cores RGB para HSV (Matiz-Saturação-Valor)
+		// O resultado da conversão é armazenado na estrutura image_3
 		vc_rgb_to_hsv(image_2, image_3);
 
+// Região pra manipular a cor das resistências
 #pragma region Cor das Resistências
 
 		vc_hsv_segmentation(image_3, image_4, 25, 43, 32, 63, 44, 86);
@@ -226,7 +235,10 @@ int main(void) {
 		//vc_hsv_segmentation(image_3, brown_segmented_image, 25, 43, 32, 63, 44, 86); 
 		//vc_hsv_segmentation(image_3, black_segmented_image, 25, 43, 32, 63, 44, 86);
 		//vc_hsv_segmentation(image_3, orange_segmented_image, 25, 43, 32, 63, 44, 86);
-/*
+
+
+
+// Região pra manipular a identificação da cor verde nas resistências
 #pragma region Cor Verde
 
 		vc_hsv_segmentation(image_3, green_segmented_image, 85, 105, 33, 53, 35, 57);
@@ -268,6 +280,7 @@ int main(void) {
 
 #pragma endregion
 
+// Região pra manipular a identificação da cor azul nas resistências
 #pragma region Cor Azul
 
 		vc_hsv_segmentation(image_3, blue_segmented_image, 110, 200, 14, 45, 32, 45);
@@ -309,7 +322,7 @@ int main(void) {
 
 #pragma endregion
 
-
+// Região pra manipular a identificação da cor vermelha nas resistências
 #pragma region Cor Vermelha
 		// Segmentação HSV para a cor vermelha
 		vc_hsv_segmentation(image_3, red_segmented_image, 0, 8, 50, 65, 60, 80);
@@ -350,7 +363,7 @@ int main(void) {
 			cv::imshow("Red Mask", red_mask_mat);
 #pragma endregion
 
-
+// Região pra manipular a identificação da cor preto nas resistências
 #pragma region Cor Preto
 
 		// Segmentação HSV para a cor preta
@@ -394,7 +407,7 @@ int main(void) {
 
 #pragma endregion
 
-
+// Região pra manipular a identificação da cor laranja nas resistências
 #pragma region Cor Laranja
 		// Segmentação HSV para a cor laranja
 		vc_hsv_segmentation(image_3, orange_segmented_image,6, 10, 65, 80, 70, 93);
@@ -434,7 +447,9 @@ int main(void) {
 		// Mostra a máscara em uma janela separada
 		cv::imshow("Orange Mask", orange_mask_mat);
 #pragma endregion
-		*/
+
+
+// Região pra manipular a identificação da cor castanha nas resistências
 #pragma region Cor Castanho
 
 		// Segmentação HSV para a cor castanho
