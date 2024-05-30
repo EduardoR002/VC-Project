@@ -1,8 +1,8 @@
 ﻿  Source.cpp
 C:\Users\Eduardo\Documents\GitHub\VC-Project\VC-Project\VC-Project\vc.h(35,9): warning C4005: 'MAX': redefinição de macro
   Gerando código
-  1 of 138 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+  23 of 139 functions (16.5%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    8 functions had inline decision re-evaluated but remain unchanged
   Finalizada a geração de código
   VC-Project.vcxproj -> C:\Users\Eduardo\Documents\GitHub\VC-Project\VC-Project\x64\Release\VC-Project.exe

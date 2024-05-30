@@ -145,7 +145,14 @@ int main(void) {
 		int nblob = 0;
 		blob = vc_binary_blob_labelling(image_4, image_5, &nblob);
 
-		IVC* mask = vc_image_new(video.width, video.height, 1, 255);
+		vc_binary_blob_info(image_5, blob, nblob);
+
+		for (int i = 0; i < nblob; i++) {
+			cv::rectangle(frame, cv::Point(blob[i].x, blob[i].y), cv::Point(blob[i].x + blob[i].width, blob[i].y + blob[i].height), cv::Scalar(0, 0, 255), 2);
+			cv::circle(frame, cv::Point(blob[i].xc, blob[i].yc), 5, cv::Scalar(0, 0, 255), -1);
+		}
+
+		/*IVC* mask = vc_image_new(video.width, video.height, 1, 255);
 		
 		// Copia os pixels da imagem fechada para a máscara
 		for (int y = 0; y < video.height; y++) {
@@ -165,7 +172,7 @@ int main(void) {
 		cv::Mat mask_mat(mask->height, mask->width, CV_8UC1, mask->data);
 
 		// Mostra a máscara em uma janela separada
-		cv::imshow("Mask", mask_mat);
+		cv::imshow("Mask", mask_mat);*/
 
 #pragma endregion
 
