@@ -86,10 +86,12 @@ int vc_convert_bgr_to_rgb(IVC* src, IVC* dst)
 			// Calcula a posição do pixel na imagem de destino.
 			pos = y * dst->bytesperline + x * dst->channels;
 
-			// Troca os valores dos canais B e R para realizar a conversão de BGR para RGB.
-			datadst[pos] = data[pos + 2]; // R <- B
-			datadst[pos + 1] = data[pos + 1]; // G <- G
-			datadst[pos + 2] = data[pos]; // B <- R
+			// Calcula a posição do pixel na imagem de destino.
+			pos = y * dst->bytesperline + x * dst->channels;
+			int* aux = datadst[pos];
+			datadst[pos] = data[pos + 2];
+			//datadst[pos + 1] = data[pos + 1];
+			datadst[pos + 2] = aux;
 		}
 	}
 
@@ -186,14 +188,17 @@ int vc_hsv_segmentation(IVC* src, IVC* dst, int hmin, int hmax, int smin, int sm
 	float h, s, v;
 	long int pos_src, pos_dst;
 
+	int x, y;
+
 	// Verificação de erros
 	if ((width <= 0) || (height <= 0) || (datasrc == NULL)) return 0;
 	if (width != dst->width || height != dst->height) return 0;
 	if (channels_src != 3 || dst->channels != 1) return 0;
 
-	// Loop pelos pixels da imagem de origem
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
+	for (y = 0; y < height; y++)
+	{
+		for (x = 0; x < width; x++)
+		{
 			// Cálculo da posição do pixel na imagem
 			pos_src = y * bytesperline_src + x * channels_src;
 			pos_dst = y * bytesperline_dst + x * channels_dst;
