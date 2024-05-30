@@ -173,8 +173,6 @@ int main(void) {
 		// Converte a codificação de cores BGR (video original) para RGB
 		vc_convert_bgr_to_rgb(image_2, image_2);
 
-
-
 		// Converte a codificação de cores RGB para HSV
 		vc_rgb_to_hsv(image_2, image_3);
 
@@ -228,7 +226,7 @@ int main(void) {
 		//vc_hsv_segmentation(image_3, brown_segmented_image, 25, 43, 32, 63, 44, 86); 
 		//vc_hsv_segmentation(image_3, black_segmented_image, 25, 43, 32, 63, 44, 86);
 		//vc_hsv_segmentation(image_3, orange_segmented_image, 25, 43, 32, 63, 44, 86);
-
+/*
 #pragma region Cor Verde
 
 		vc_hsv_segmentation(image_3, green_segmented_image, 85, 105, 33, 53, 35, 57);
@@ -310,8 +308,8 @@ int main(void) {
 		cv::imshow("Blue Mask", blue_mask_mat);
 
 #pragma endregion
-		
-		
+
+
 #pragma region Cor Vermelha
 		// Segmentação HSV para a cor vermelha
 		vc_hsv_segmentation(image_3, red_segmented_image, 0, 8, 50, 65, 60, 80);
@@ -352,50 +350,6 @@ int main(void) {
 			cv::imshow("Red Mask", red_mask_mat);
 #pragma endregion
 
-
-
-#pragma region Cor Castanho
-
-		// Segmentação HSV para a cor castanho
-		vc_hsv_segmentation(image_3, brown_segmented_image, 10, 30, 20, 180, 20, 100);
-
-		// Abertura binária da imagem segmentada
-		IVC* brown_opened_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_open(brown_segmented_image, brown_opened_image, 3, 3);
-
-		// Fechamento binário da imagem aberta
-		IVC* brown_closed_image = vc_image_new(video.width, video.height, 1, 255);	
-		vc_binary_close(brown_opened_image, brown_closed_image, 3, 3);
-
-		// Etiquetagem de blobs na imagem fechada
-		OVC* brown_blob = nullptr;
-		int brown_nblob = 0;
-		brown_blob = vc_binary_blob_labelling(brown_closed_image, brown_segmented_image, &brown_nblob);
-
-		// Cria uma máscara para a cor castanho
-		IVC* brown_mask = vc_image_new(video.width, video.height, 1, 255);
-
-		// Copia os pixels da imagem segmentada para a máscara
-		for (int y = 0; y < video.height; y++) {
-			for (int x = 0; x < video.width; x++) {
-				int index = y * video.width + x;
-				// Se o pixel na imagem segmentada for castanho (0), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
-				if (brown_closed_image->data[index] == 0) {
-					brown_mask->data[index] = 0;
-				}
-				else {
-					brown_mask->data[index] = 255;
-				}
-			}
-		}
-
-		// Cria uma matriz OpenCV para exibir a máscara castanha
-		cv::Mat brown_mask_mat(brown_mask->height, brown_mask->width, CV_8UC1, brown_mask->data);
-
-		// Mostra a máscara castanha em uma janela separada
-		cv::imshow("Brown Mask", brown_mask_mat);
-
-#pragma endregion
 
 #pragma region Cor Preto
 
@@ -479,6 +433,49 @@ int main(void) {
 
 		// Mostra a máscara em uma janela separada
 		cv::imshow("Orange Mask", orange_mask_mat);
+#pragma endregion
+		*/
+#pragma region Cor Castanho
+
+		// Segmentação HSV para a cor castanho
+		vc_hsv_segmentation(image_3, brown_segmented_image, 4, 19, 37, 46, 35, 50);
+
+		// Abertura binária da imagem segmentada
+		IVC* brown_opened_image = vc_image_new(video.width, video.height, 1, 255);
+		vc_binary_open(brown_segmented_image, brown_opened_image, 3, 3);
+
+		// Fechamento binário da imagem aberta
+		IVC* brown_closed_image = vc_image_new(video.width, video.height, 1, 255);
+		vc_binary_close(brown_opened_image, brown_closed_image, 3, 3);
+
+		// Etiquetagem de blobs na imagem fechada
+		OVC* brown_blob = nullptr;
+		int brown_nblob = 0;
+		brown_blob = vc_binary_blob_labelling(brown_closed_image, brown_segmented_image, &brown_nblob);
+
+		// Cria uma máscara para a cor castanho
+		IVC* brown_mask = vc_image_new(video.width, video.height, 1, 255);
+
+		// Copia os pixels da imagem segmentada para a máscara
+		for (int y = 0; y < video.height; y++) {
+			for (int x = 0; x < video.width; x++) {
+				int index = y * video.width + x;
+				// Se o pixel na imagem segmentada for castanho (0), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
+				if (brown_closed_image->data[index] == 0) {
+					brown_mask->data[index] = 0;
+				}
+				else {
+					brown_mask->data[index] = 255;
+				}
+			}
+		}
+
+		// Cria uma matriz OpenCV para exibir a máscara castanha
+		cv::Mat brown_mask_mat(brown_mask->height, brown_mask->width, CV_8UC1, brown_mask->data);
+
+		// Mostra a máscara castanha em uma janela separada
+		cv::imshow("Brown Mask", brown_mask_mat);
+
 #pragma endregion
 
 
