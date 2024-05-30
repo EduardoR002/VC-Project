@@ -399,7 +399,7 @@ int main(void) {
 #pragma region Cor Preto
 
 		// Segmentação HSV para a cor preta
-		vc_hsv_segmentation(image_3, black_segmented_image, 0, 180, 0, 255, 0, 30);
+		vc_hsv_segmentation(image_3, black_segmented_image, 40, 210, 4, 38, 20, 35);
 
 		// Abertura binária da imagem segmentada
 		IVC* black_opened_image = vc_image_new(video.width, video.height, 1, 255);
@@ -417,16 +417,16 @@ int main(void) {
 		// Cria uma máscara para a cor preta
 		IVC* black_mask = vc_image_new(video.width, video.height, 1, 255);
 
-		// Copia os pixels da imagem segmentada para a máscara
+		// Copia os pixels da imagem segmentada para a máscara, invertendo as cores
 		for (int y = 0; y < video.height; y++) {
 			for (int x = 0; x < video.width; x++) {
 				int index = y * video.width + x;
-				// Se o pixel na imagem segmentada for preto (0), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
+				// Se o pixel na imagem segmentada for preto (0), define o pixel na máscara como 0 (preto), caso contrário, define como 255 (branco)
 				if (black_closed_image->data[index] == 0) {
-					black_mask->data[index] = 255;
+					black_mask->data[index] = 0;
 				}
 				else {
-					black_mask->data[index] = 0;
+					black_mask->data[index] = 255;
 				}
 			}
 		}
