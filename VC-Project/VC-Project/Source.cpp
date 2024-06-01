@@ -444,6 +444,19 @@ int main(void) {
 
 		cv::Mat coresconjuntas(coresjuntas->height,coresjuntas->width, CV_8UC1, teste->data);
 		cv::imshow("Cores Juntas", coresconjuntas);
+
+		// Etiquetagem de blobs na imagem fechada
+
+		OVC* coresjuntas_blob = nullptr;
+		int coresjuntas_nblob = 0;
+		IVC* coresjuntas2 = vc_image_new(image->width, image->height, 1, 255);
+		coresjuntas_blob = vc_binary_blob_labelling(coresjuntas, coresjuntas2, &coresjuntas_nblob);
+		vc_binary_blob_info(coresjuntas2, coresjuntas_blob, coresjuntas_nblob);
+
+		for (int i = 0; i < coresjuntas_nblob; i++) {
+			cv::rectangle(frame, cv::Point(coresjuntas_blob[i].x, coresjuntas_blob[i].y), cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width, coresjuntas_blob[i].y + coresjuntas_blob[i].height), cv::Scalar(0, 0, 255), 2);
+			cv::circle(frame, cv::Point(coresjuntas_blob[i].xc, coresjuntas_blob[i].yc), 5, cv::Scalar(0, 0, 255), -1);
+		}
 #pragma endregion
 		// Exibe a frame
 		cv::imshow("VC - VIDEO", frame);

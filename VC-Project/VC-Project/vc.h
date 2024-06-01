@@ -147,5 +147,12 @@ OVC* vc_binary_blob_labelling(IVC* src, IVC* dst, int* nlabels);
 // RETORNO: 0 se as informações dos blobs forem obtidas com sucesso, -1 caso contrário.
 int vc_binary_blob_info(IVC* src, OVC* blobs, int nblobs);
 
+int copy_image(IVC* src, IVC* dst);
+
+int vc_write_image(char* filename, IVC* image);
+
+
+long int unsigned_char_to_bit(unsigned char datauchar, unsigned chardatabit, int width, int height);
+
 
 #endif /* VC_H */

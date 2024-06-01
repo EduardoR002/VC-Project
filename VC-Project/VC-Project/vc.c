@@ -687,3 +687,133 @@ int vc_binary_blob_info(IVC* src, OVC* blobs, int nblobs)
 
 	return 1; // Retorna 1 para indicar sucesso
 }
+
+//
+int copy_image(IVC* src, IVC* dst) {
+	unsigned char* data = (unsigned char*)src->data; // Ponteiro para os dados da imagem
+	int width = src->width; // Largura da imagem
+	int height = src->height; // Altura da imagem
+	int bytesperline = src->bytesperline; // Número de bytes por linha
+	int channels = src->channels; // Número de canais de cor
+	int x, y, i; // Variáveis de iteração
+	long int pos; // Posição do pixel na matriz
+	int xmin, ymin, xmax, ymax; // Coordenadas para bounding box
+	long int sumx, sumy; // Soma das coordenadas para o centro de gravidade
+
+	// Verificação de erros
+	if ((src->width <= 0) || (src->height <= 0) || (src->data == NULL))
+		return 0; // Retorna 0 se a imagem estiver vazia ou as dimensões forem inválidas
+	if (channels != 1)
+		return 0; // Retorna 0 se a imagem não for em tons de cinza
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			pos = y * bytesperline + x * channels;
+			if (dst->data[pos] == 255) continue;
+
+			dst->data[pos] = src->data[pos];
+			
+		}
+	}
+	return 1;
+}
+
+
+int vc_write_image(char* filename, IVC* image)
+{
+	FILE* file = NULL;
+	unsigned char* tmp;
+	long int totalbytes, sizeofbinarydata;
+
+	if (image == NULL) return 0;
+
+	if ((file = fopen(filename, "wb")) != NULL)
+	{
+		if (image->levels == 1)
+		{
+			sizeofbinarydata = (image->width / 8 + ((image->width % 8) ? 1 : 0)) * image->height + 1;
+			tmp = (unsigned char*)malloc(sizeofbinarydata);
+			if (tmp == NULL) return 0;
+
+			fprintf(file, "%s %d %d\n", "P4", image->width, image->height);
+
+			totalbytes = unsigned_char_to_bit(image->data, tmp, image->width, image->height);
+			printf("Total = %ld\n", totalbytes);
+			if (fwrite(tmp, sizeof(unsigned char), totalbytes, file) != totalbytes)
+			{
+#ifdef VC_DEBUG
+				fprintf(stderr, "ERROR -> vc_read_image():\n\tError writing PBM, PGM or PPM file.\n");
+#endif
+
+				fclose(file);
+				free(tmp);
+				return 0;
+			}
+
+			free(tmp);
+		}
+		else
+		{
+			fprintf(file, "%s %d %d 255\n", (image->channels == 1) ? "P5" : "P6", image->width, image->height);
+
+			if (fwrite(image->data, image->bytesperline, image->height, file) != image->height)
+			{
+#ifdef VC_DEBUG
+				fprintf(stderr, "ERROR -> vc_read_image():\n\tError writing PBM, PGM or PPM file.\n");
+#endif
+
+				fclose(file);
+				return 0;
+			}
+		}
+
+		fclose(file);
+
+		return 1;
+	}
+
+	return 0;
+}
+long int unsigned_char_to_bit(unsigned char* datauchar, unsigned char* databit, int width, int height)
+{
+	int x, y;
+	int countbits;
+	long int pos, counttotalbytes;
+	unsigned char* p = databit;
+
+	p = 0;
+	countbits = 1;
+	counttotalbytes = 0;
+
+	for (y = 0; y < height; y++)
+	{
+		for (x = 0; x < width; x++)
+		{
+			pos = width* y + x;
+
+			if (countbits <= 8)
+			{
+				// Numa imagem PBM:
+				// 1 = Preto
+				// 0 = Branco
+				//*p |= (datauchar[pos] != 0) << (8 - countbits);
+
+				// Na nossa imagem:
+				// 1 = Branco
+				// 0 = Preto
+				*p |= (datauchar[pos] == 0) << (8 - countbits);
+
+				countbits++;
+			}
+			if ((countbits > 8) || (x == width - 1))
+			{
+				p++;
+				*p = 0;
+				countbits = 1;
+				counttotalbytes++;
+			}
+		}
+	}
+
+	return counttotalbytes;
+}
