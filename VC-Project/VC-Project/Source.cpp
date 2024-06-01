@@ -12,6 +12,10 @@ extern "C" {
 #include "vc.h"
 }
 
+struct Blob {
+	int x, y, width, height;
+};
+
 // Função vc_timer que mede e exibe o tempo decorrido entre chamadas consecutivas.
 void vc_timer(void) {
 
@@ -99,6 +103,9 @@ int main(void) {
 
 	// Declara uma matriz frame para armazenar cada frame do vídeo.
 	cv::Mat frame;
+
+	int contador = 0;
+	std::vector<Blob> blobs_detectados;
 
 	// Inicia um loop que continua até que a tecla 'q' seja pressionada.
 	while (key != 'q') {
@@ -287,26 +294,27 @@ int main(void) {
 		IVC* coresjuntas2 = vc_image_new(image->width, image->height, 1, 255);
 		coresjuntas_blob = vc_binary_blob_labelling(coresjuntasD, coresjuntas2, &coresjuntas_nblob);
 		vc_binary_blob_info(coresjuntas2, coresjuntas_blob, coresjuntas_nblob);
-		char first_band = ' ';
-		char second_band = ' ';
-		char third_band = ' ';
 
 		for (int i = 0; i < coresjuntas_nblob; i++) {
 			// Verifica se o blob é significativo para evitar ruídos pequenos
-			if (coresjuntas_blob[i].area > 4000 && coresjuntas_blob[i].width > 150 && coresjuntas_blob[i].height < 90) { // Pode ajustar o valor da área mínima
+			if (coresjuntas_blob[i].area > 4000 && coresjuntas_blob[i].width > 150 && coresjuntas_blob[i].height < 90) {
 				cv::rectangle(frame, cv::Point(coresjuntas_blob[i].x, coresjuntas_blob[i].y), cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width, coresjuntas_blob[i].y + coresjuntas_blob[i].height), cv::Scalar(0, 0, 255), 2);
 				cv::circle(frame, cv::Point(coresjuntas_blob[i].xc, coresjuntas_blob[i].yc), 5, cv::Scalar(0, 0, 255), -1);
-
 				int area = coresjuntas_blob[i].area * (coresjuntas_blob[i].width / (double)coresjuntas2->width) * (coresjuntas_blob[i].height / (double)coresjuntas2->height);
-
 				// Mostrar área ao lado da bounding box
 				std::string area_text = "Area: " + std::to_string(area);
 				//std::string altura_text = "Altura: " + std::to_string(coresjuntas_blob[i].height);
 				cv::putText(frame, area_text, cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width + 5, coresjuntas_blob[i].y + 15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
 				//cv::putText(frame, altura_text, cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width + 5, coresjuntas_blob[i].y + 40), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255), 1);	
-				
-			}	
+
+				if (coresjuntas_blob[i].yc > 399 && coresjuntas_blob[i].yc < 407)
+				{
+					contador++;
+				}
+			}
 		}
+		std::string contador_text = "Numero resistencias: " + std::to_string(contador);
+		cv::putText(frame, contador_text, cv::Point(450, 30), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 0, 255), 2);
 
 
 
