@@ -5,6 +5,8 @@
 #include <opencv2\core.hpp>
 #include <opencv2\highgui.hpp>
 #include <opencv2\videoio.hpp>
+#include <vector>
+#include <map>
 
 extern "C" {
 #include "vc.h"
@@ -190,19 +192,6 @@ int main(void) {
 
 		vc_hsv_segmentation(image_3, image_4, 25, 43, 32, 63, 44, 86);
 
-		// Abertura binária da imagem
-		vc_binary_open(image_4, image_5, 3, 3);
-
-		// Fechamento binário da imagem
-		vc_binary_close(image_5, image_4, 3, 3);
-
-		// Etiquetagem de blobs
-		OVC* blob = nullptr;
-		int nblob = 0;
-		blob = vc_binary_blob_labelling(image_4, image_5, &nblob);
-
-		vc_binary_blob_info(image_5, blob, nblob);
-
 		copy_image(image_4, coresjuntas);
 
 
@@ -216,248 +205,111 @@ int main(void) {
 
 
 // Região pra manipular a identificação da cor verde nas resistências
-
 #pragma region Cor Verde
-
-		vc_hsv_segmentation(image_3, green_segmented_image, 85, 105, 33, 53, 35, 57);
-
-		// Abertura binária da imagem segmentada
-		IVC* green_opened_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_open(green_segmented_image, green_opened_image, 3, 3);
-
-		// Fechamento binário da imagem aberta
-		IVC* green_closed_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_close(green_opened_image, green_closed_image, 3, 3);
-
-		// Etiquetagem de blobs na imagem fechada
-		OVC* green_blob = nullptr;
-		int green_nblob = 0;
-		green_blob = vc_binary_blob_labelling(green_closed_image, green_segmented_image, &green_nblob);
-
-		IVC* green_mask = vc_image_new(video.width, video.height, 1, 255);
-
-		// Copia os pixels da imagem segmentada para a máscara
-		for (int y = 0; y < video.height; y++) {
-			for (int x = 0; x < video.width; x++) {
-				int index = y * video.width + x;
-				// Se o pixel na imagem segmentada for azul (0), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
-				if (green_closed_image->data[index] == 0) {
-					green_mask->data[index] = 0;
-				}
-				else {
-					green_mask->data[index] = 255;
-				}
-			}
-		}	
-		copy_image(green_mask, coresjuntas);
-
-
+		vc_hsv_segmentation(image_3, green_segmented_image, 85, 105, 33, 53, 35, 57); 
+		OVC* blobGreen = nullptr;
+		int nblobGreen = 0;
+		IVC* greenBlobImage = vc_image_new(video.width, video.height, 1, 255);
+		blobGreen = vc_binary_blob_labelling(green_segmented_image, greenBlobImage, &nblobGreen);
+		vc_binary_blob_info (greenBlobImage, blobGreen, nblobGreen);
+		copy_image(green_segmented_image, coresjuntas);
 #pragma endregion
 
 // Região pra manipular a identificação da cor azul nas resistências
 #pragma region Cor Azul
-
 		vc_hsv_segmentation(image_3, blue_segmented_image, 110, 200, 14, 45, 32, 45);
-
-		// Abertura binária da imagem segmentada
-		IVC* blue_opened_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_open(blue_segmented_image, blue_opened_image, 3, 3);
-
-		// Fechamento binário da imagem aberta
-		IVC* blue_closed_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_close(blue_opened_image, blue_closed_image, 3, 3);
-
-		// Etiquetagem de blobs na imagem fechada
-		OVC* blue_blob = nullptr;
-		int blue_nblob = 0;
-		blue_blob = vc_binary_blob_labelling(blue_closed_image, blue_segmented_image, &blue_nblob);
-
-		IVC* blue_mask = vc_image_new(video.width, video.height, 1, 255);
-
-		// Copia os pixels da imagem segmentada para a máscara
-		for (int y = 0; y < video.height; y++) {
-			for (int x = 0; x < video.width; x++) {
-				int index = y * video.width + x;
-				// Se o pixel na imagem segmentada for azul (0), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
-				if (blue_closed_image->data[index] == 0) {
-					blue_mask->data[index] = 0;
-				}
-				else {
-					blue_mask->data[index] = 255;
-				}
-			}
-		}
-		copy_image(blue_mask, coresjuntas);
+		OVC* blobBlue = nullptr;
+		int nblobBlue = 0;
+		IVC* blueBlobImage = vc_image_new(video.width, video.height, 1, 255);
+		blobBlue = vc_binary_blob_labelling(blue_segmented_image, blueBlobImage, &nblobBlue);
+		vc_binary_blob_info(blueBlobImage, blobBlue, nblobBlue);
+		copy_image(blue_segmented_image, coresjuntas);
 #pragma endregion
 
 // Região pra manipular a identificação da cor vermelha nas resistências
 #pragma region Cor Vermelha
 		// Segmentação HSV para a cor vermelha
 		vc_hsv_segmentation(image_3, red_segmented_image, 0, 11, 45, 69, 55, 89);
-
-		// Abertura binária da imagem segmentada
-		IVC* red_opened_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_open(red_segmented_image, red_opened_image, 3, 3);
-
-		// Fechamento binário da imagem aberta
-		IVC* red_closed_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_close(red_opened_image, red_closed_image, 3, 3);
-		
-		// Etiquetagem de blobs na imagem fechada
-		OVC* red_blob = nullptr;
-		int red_nblob = 0;
-		red_blob = vc_binary_blob_labelling(red_closed_image, red_segmented_image, &red_nblob);
-
-		IVC* red_mask = vc_image_new(video.width, video.height, 1, 255);
-
-		// Copia os pixels da imagem segmentada para a máscara
-		for (int y = 0; y < video.height; y++) {
-			for (int x = 0; x < video.width; x++) {
-				int index = y * video.width + x;
-				// Se o pixel na imagem segmentada for vermelho (0), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
-				if (red_closed_image->data[index] == 0) {
-					red_mask->data[index] = 0;
-				}
-				else {
-					red_mask->data[index] = 255;
-				}
-			}
-		}
-		copy_image(red_mask, coresjuntas);
+		OVC* blobRed = nullptr;
+		int nblobRed = 0;
+		IVC* redBlobImage = vc_image_new(video.width, video.height, 1, 255);
+		blobRed = vc_binary_blob_labelling(red_segmented_image, redBlobImage, & nblobRed);
+		vc_binary_blob_info(redBlobImage, blobRed, nblobRed);
+		copy_image(red_segmented_image, coresjuntas);
 #pragma endregion
 
 // Região pra manipular a identificação da cor preto nas resistências
 #pragma region Cor Preto
-
 		// Segmentação HSV para a cor preta
 		vc_hsv_segmentation(image_3, black_segmented_image, 40, 210, 4, 38, 20, 35);
-
-		// Abertura binária da imagem segmentada
-		IVC* black_opened_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_open(black_segmented_image, black_opened_image, 3, 3);
-
-		// Fechamento binário da imagem aberta
-		IVC* black_closed_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_close(black_opened_image, black_closed_image, 3, 3);
-
-		// Etiquetagem de blobs na imagem fechada
-		OVC* black_blob = nullptr;
-		int black_nblob = 0;
-		black_blob = vc_binary_blob_labelling(black_closed_image, black_segmented_image, &black_nblob);
-
-		// Cria uma máscara para a cor preta
-		IVC* black_mask = vc_image_new(video.width, video.height, 1, 255);
-
-		// Copia os pixels da imagem segmentada para a máscara, invertendo as cores
-		for (int y = 0; y < video.height; y++) {
-			for (int x = 0; x < video.width; x++) {
-				int index = y * video.width + x;
-				// Se o pixel na imagem segmentada for preto (0), define o pixel na máscara como 0 (preto), caso contrário, define como 255 (branco)
-				if (black_closed_image->data[index] == 0) {
-					black_mask->data[index] = 0;
-				}
-				else {
-					black_mask->data[index] = 255;
-				}
-			}
-		}
-
-		copy_image(black_mask, coresjuntas);
+		OVC* blobBlack = nullptr;
+		int nblobBlack = 0;
+		IVC* blackBlobImage = vc_image_new(video.width, video.height, 1, 255);
+		blobBlack = vc_binary_blob_labelling(black_segmented_image, blackBlobImage, &nblobBlack);
+		vc_binary_blob_info(blackBlobImage, blobBlack, nblobBlack);
+		copy_image(black_segmented_image, coresjuntas);
 #pragma endregion
 
 // Região pra manipular a identificação da cor laranja nas resistências
-
 #pragma region Cor Laranja
 		// Segmentação HSV para a cor laranja
 		vc_hsv_segmentation(image_3, orange_segmented_image,6, 10, 65, 80, 70, 93);
-
-		// Abertura binária da imagem segmentada
-		IVC* orange_opened_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_open(orange_segmented_image, orange_opened_image, 3, 3);
-
-		// Fechamento binário da imagem aberta
-		IVC* orange_closed_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_close(orange_opened_image, orange_closed_image, 3, 3);
-
-		// Etiquetagem de blobs na imagem fechada
-		OVC* orange_blob = nullptr;
-		int orange_nblob = 0;
-		orange_blob = vc_binary_blob_labelling(orange_closed_image, orange_segmented_image, &orange_nblob);
-
-		IVC* orange_mask = vc_image_new(video.width, video.height, 1, 255);
-
-		// Copia os pixels da imagem segmentada para a máscara
-		for (int y = 0; y < video.height; y++) {
-			for (int x = 0; x < video.width; x++) {
-				int index = y * video.width + x;
-				// Se o pixel na imagem segmentada for laranja (0), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
-				if (orange_closed_image->data[index] == 0) {
-					orange_mask->data[index] = 0;
-				}
-				else {
-					orange_mask->data[index] = 255;
-				}
-			}
-		}
-		copy_image(orange_mask, coresjuntas);
-
+		OVC* blobOrange = nullptr;
+		int nblobOrange = 0;
+		IVC* orangeBlobImage = vc_image_new(video.width, video.height, 1, 255);
+		blobOrange = vc_binary_blob_labelling(orange_segmented_image, orangeBlobImage, &nblobOrange);
+		vc_binary_blob_info(orangeBlobImage, blobOrange, nblobOrange);
+		copy_image(orange_segmented_image, coresjuntas);
 #pragma endregion
 
 // Região pra manipular a identificação da cor castanha nas resistências
 #pragma region Cor Castanho
-
 		// Segmentação HSV para a cor castanho
 		vc_hsv_segmentation(image_3, brown_segmented_image, 11, 26, 26, 46, 30, 50);
+		OVC* blobBrown = nullptr;
+		int nblobBrown = 0;
+		IVC* brownBlobImage = vc_image_new(video.width, video.height, 1, 255);
+		blobBrown = vc_binary_blob_labelling(brown_segmented_image, brownBlobImage, &nblobBrown);
+		vc_binary_blob_info(brownBlobImage, blobBrown, nblobBrown);
+		copy_image(brown_segmented_image, coresjuntas);
+#pragma endregion
 
-		// Abertura binária da imagem segmentada
-		IVC* brown_opened_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_open(brown_segmented_image, brown_opened_image, 3, 3);
-
-		// Fechamento binário da imagem aberta
-		IVC* brown_closed_image = vc_image_new(video.width, video.height, 1, 255);
-		vc_binary_close(brown_opened_image, brown_closed_image, 3, 3);
-
-		// Etiquetagem de blobs na imagem fechada
-		OVC* brown_blob = nullptr;
-		int brown_nblob = 0;
-		brown_blob = vc_binary_blob_labelling(brown_closed_image, brown_segmented_image, &brown_nblob);
-
-		// Cria uma máscara para a cor castanho
-		IVC* brown_mask = vc_image_new(video.width, video.height, 1, 255);
-
-		// Copia os pixels da imagem segmentada para a máscara
-		for (int y = 0; y < video.height; y++) {
-			for (int x = 0; x < video.width; x++) {
-				int index = y * video.width + x;
-				// Se o pixel na imagem segmentada for castanho (0), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
-				if (brown_closed_image->data[index] == 0) {
-					brown_mask->data[index] = 0;
-				}
-				else {
-					brown_mask->data[index] = 255;
-				}
-			}
-		}
-		copy_image(brown_mask, coresjuntas);
-		IVC* teste = vc_image_new(image->width,image->height,1,255);
-		vc_binary_dilate(coresjuntas, teste, 3);
-
-		cv::Mat coresconjuntas(coresjuntas->height,coresjuntas->width, CV_8UC1, teste->data);
+		//cv::morphologyEx(coresconjuntas, coresconjuntas, cv::MORPH_CLOSE, cv::Mat(), cv::Point(-1, -1), 2);
+		IVC* coresjuntasD = vc_image_new(image->width, image->height, 1, 255);
+		//vc_binary_dilate(coresjuntas, coresjuntasD, 7);
+		vc_binary_open(coresjuntas, coresjuntasD, 1, 7);
+		cv::Mat coresconjuntas(coresjuntasD->height, coresjuntasD->width, CV_8UC1, coresjuntasD->data);
 		cv::imshow("Cores Juntas", coresconjuntas);
 
 		// Etiquetagem de blobs na imagem fechada
-
 		OVC* coresjuntas_blob = nullptr;
 		int coresjuntas_nblob = 0;
 		IVC* coresjuntas2 = vc_image_new(image->width, image->height, 1, 255);
-		coresjuntas_blob = vc_binary_blob_labelling(coresjuntas, coresjuntas2, &coresjuntas_nblob);
+		coresjuntas_blob = vc_binary_blob_labelling(coresjuntasD, coresjuntas2, &coresjuntas_nblob);
 		vc_binary_blob_info(coresjuntas2, coresjuntas_blob, coresjuntas_nblob);
+		char first_band = ' ';
+		char second_band = ' ';
+		char third_band = ' ';
 
 		for (int i = 0; i < coresjuntas_nblob; i++) {
-			cv::rectangle(frame, cv::Point(coresjuntas_blob[i].x, coresjuntas_blob[i].y), cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width, coresjuntas_blob[i].y + coresjuntas_blob[i].height), cv::Scalar(0, 0, 255), 2);
-			cv::circle(frame, cv::Point(coresjuntas_blob[i].xc, coresjuntas_blob[i].yc), 5, cv::Scalar(0, 0, 255), -1);
+			// Verifica se o blob é significativo para evitar ruídos pequenos
+			if (coresjuntas_blob[i].area > 4000 && coresjuntas_blob[i].width > 150 && coresjuntas_blob[i].height < 90) { // Pode ajustar o valor da área mínima
+				cv::rectangle(frame, cv::Point(coresjuntas_blob[i].x, coresjuntas_blob[i].y), cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width, coresjuntas_blob[i].y + coresjuntas_blob[i].height), cv::Scalar(0, 0, 255), 2);
+				cv::circle(frame, cv::Point(coresjuntas_blob[i].xc, coresjuntas_blob[i].yc), 5, cv::Scalar(0, 0, 255), -1);
+
+				int area = coresjuntas_blob[i].area * (coresjuntas_blob[i].width / (double)coresjuntas2->width) * (coresjuntas_blob[i].height / (double)coresjuntas2->height);
+
+				// Mostrar área ao lado da bounding box
+				std::string area_text = "Area: " + std::to_string(area);
+				//std::string altura_text = "Altura: " + std::to_string(coresjuntas_blob[i].height);
+				cv::putText(frame, area_text, cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width + 5, coresjuntas_blob[i].y + 15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
+				//cv::putText(frame, altura_text, cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width + 5, coresjuntas_blob[i].y + 40), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255), 1);	
+				
+			}	
 		}
-#pragma endregion
+
+
+
 		// Exibe a frame
 		cv::imshow("VC - VIDEO", frame);
 
