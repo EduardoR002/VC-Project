@@ -296,6 +296,9 @@ int main(void) {
 		vc_binary_blob_info(coresjuntas2, coresjuntas_blob, coresjuntas_nblob);
 
 		for (int i = 0; i < coresjuntas_nblob; i++) {
+			int cores[2];
+			std::vector<std::pair<int, char>> posicao_cores;
+			int helper = 0;
 			// Verifica se o blob é significativo para evitar ruídos pequenos
 			if (coresjuntas_blob[i].area > 4000 && coresjuntas_blob[i].width > 150 && coresjuntas_blob[i].height < 90) {
 				cv::rectangle(frame, cv::Point(coresjuntas_blob[i].x, coresjuntas_blob[i].y), cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width, coresjuntas_blob[i].y + coresjuntas_blob[i].height), cv::Scalar(0, 0, 255), 2);
@@ -311,7 +314,74 @@ int main(void) {
 				{
 					contador++;
 				}
+				for (int j = 0; j < nblobGreen; j++)
+				{
+					if (blobGreen[j].xc >= coresjuntas_blob[i].x && blobGreen[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) {
+						posicao_cores.push_back(std::make_pair(blobGreen[j].xc, 'g'));
+						helper++;
+						break;
+					}
+				}
+				for (int j = 0; j < nblobBlue; j++)
+				{
+					if (blobBlue[j].xc >= coresjuntas_blob[i].x && blobBlue[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) {
+						posicao_cores.push_back(std::make_pair(blobBlue[j].xc, 'b'));
+						helper++;
+						break;
+					}
+				}
+				for (int j = 0; j < nblobRed; j++)
+				{
+					if (blobRed[j].xc >= coresjuntas_blob[i].x && blobRed[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) { 
+						posicao_cores.push_back(std::make_pair(blobRed[j].xc, 'r')); 
+						helper++; 
+						break;
+					}
+				}
+				std::sort(posicao_cores.begin(), posicao_cores.end());
+				for (int j = 0; j < posicao_cores.size(); j++)
+				{
+					if (j != 2)
+					{
+						switch (posicao_cores[j].second) {
+						case 'g':
+							cores[j] = 5;
+							break;
+						case 'b':
+							cores[j] = 6;
+							break;
+						case 'r':
+							cores[j] = 7;
+							break;
+						default:
+							break;
+						}
+					}
+					else {
+						switch (posicao_cores[j].second) {
+						case 'g':
+							cores[j] = 100000;
+							break;
+						case 'b':
+							cores[j] = 1000000;
+							break;
+						case 'r':
+							cores[j] = 100;
+							break;
+						default:
+							break;
+						}
+					}
+				}
+				if (posicao_cores.size() != 0)
+				{
+					std::string val_str = std::to_string(cores[0]) + std::to_string(cores[1]);
+					int value = std::stoi(val_str) * cores[2];
+					std::string value_text = "Valor: " + std::to_string(value);
+					cv::putText(frame, value_text, cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width + 5, coresjuntas_blob[i].y + 50), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 0, 255), 2);
+				}
 			}
+			
 		}
 		std::string contador_text = "Numero resistencias: " + std::to_string(contador);
 		cv::putText(frame, contador_text, cv::Point(450, 30), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 0, 255), 2);
