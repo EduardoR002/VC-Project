@@ -93,6 +93,7 @@ int main(void) {
 
 	// Inicia um temporizador para medir o tempo decorrido entre chamadas consecutivas, útil para monitorar o desempenho do processamento de vídeo
 	vc_timer();
+	//capture.set(cv::CAP_PROP_POS_FRAMES, 500);
 
 	// Declara uma matriz frame para armazenar cada frame do vídeo.
 	cv::Mat frame;
@@ -107,7 +108,7 @@ int main(void) {
 		if (frame.empty()) break;
 
 		// Aplica um filtro de desfoque gaussiano ao frame. Isso suaviza a imagem, reduzindo o ruído e detalhes excessivos
-		cv::GaussianBlur(frame, frame, cv::Size(5, 5), 0);
+		//cv::GaussianBlur(frame, frame, cv::Size(5, 5), 0);
 
 
 		// Obtém o índice da frame atual no vídeo utilizando o método get() do objeto capture. Ele retorna a posição atual do vídeo em termos de número de frames
@@ -161,7 +162,7 @@ int main(void) {
 		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels azuis
 		IVC* blue_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
 
-
+		IVC* coresjuntas = vc_image_new(video.width, video.height, 1, 255);
 		// Guarda a memória da imagem, copia os dados de pixels da frame do vídeo para a imagem image_2, permitindo que ela contenha o conteúdo visual da frame atual do vídeo
 		memcpy(image_2->data, frame.data, video.width* video.height * 3);
 
@@ -202,32 +203,8 @@ int main(void) {
 
 		vc_binary_blob_info(image_5, blob, nblob);
 
-		for (int i = 0; i < nblob; i++) {
-			cv::rectangle(frame, cv::Point(blob[i].x, blob[i].y), cv::Point(blob[i].x + blob[i].width, blob[i].y + blob[i].height), cv::Scalar(0, 0, 255), 2);
-			cv::circle(frame, cv::Point(blob[i].xc, blob[i].yc), 5, cv::Scalar(0, 0, 255), -1);
-		}
+		copy_image(image_4, coresjuntas);
 
-		/*IVC* mask = vc_image_new(video.width, video.height, 1, 255);
-
-		// Copia os pixels da imagem fechada para a máscara
-		for (int y = 0; y < video.height; y++) {
-			for (int x = 0; x < video.width; x++) {
-				int index = y * video.width + x;
-				// Se o pixel na imagem fechada for ativo (255), define o pixel na máscara como 255 (branco), caso contrário, define como 0 (preto)
-				if (image_4->data[index] == 255) {
-					mask->data[index] = 255;
-				}
-				else {
-					mask->data[index] = 0;
-				}
-			}
-		}
-
-		// Cria uma matriz OpenCV para exibir a máscara
-		cv::Mat mask_mat(mask->height, mask->width, CV_8UC1, mask->data);
-
-		// Mostra a máscara em uma janela separada
-		cv::imshow("Mask", mask_mat);*/
 
 #pragma endregion
 
@@ -239,7 +216,7 @@ int main(void) {
 
 
 // Região pra manipular a identificação da cor verde nas resistências
-		
+
 #pragma region Cor Verde
 
 		vc_hsv_segmentation(image_3, green_segmented_image, 85, 105, 33, 53, 35, 57);
@@ -271,13 +248,9 @@ int main(void) {
 					green_mask->data[index] = 255;
 				}
 			}
-		}
+		}	
+		copy_image(green_mask, coresjuntas);
 
-		// Cria uma matriz OpenCV para exibir a máscara
-		cv::Mat green_mask_mat(green_mask->height, green_mask->width, CV_8UC1, green_mask->data);
-
-		// Mostra a máscara em uma janela separada
-		cv::imshow("Green Mask", green_mask_mat);
 
 #pragma endregion
 
@@ -314,19 +287,13 @@ int main(void) {
 				}
 			}
 		}
-
-		// Cria uma matriz OpenCV para exibir a máscara
-		cv::Mat blue_mask_mat(blue_mask->height, blue_mask->width, CV_8UC1, blue_mask->data);
-
-		// Mostra a máscara em uma janela separada
-		cv::imshow("Blue Mask", blue_mask_mat);
-
+		copy_image(blue_mask, coresjuntas);
 #pragma endregion
 
 // Região pra manipular a identificação da cor vermelha nas resistências
 #pragma region Cor Vermelha
 		// Segmentação HSV para a cor vermelha
-		vc_hsv_segmentation(image_3, red_segmented_image, 0, 8, 50, 65, 60, 80);
+		vc_hsv_segmentation(image_3, red_segmented_image, 0, 11, 45, 69, 55, 89);
 
 		// Abertura binária da imagem segmentada
 		IVC* red_opened_image = vc_image_new(video.width, video.height, 1, 255);
@@ -335,7 +302,7 @@ int main(void) {
 		// Fechamento binário da imagem aberta
 		IVC* red_closed_image = vc_image_new(video.width, video.height, 1, 255);
 		vc_binary_close(red_opened_image, red_closed_image, 3, 3);
-
+		
 		// Etiquetagem de blobs na imagem fechada
 		OVC* red_blob = nullptr;
 		int red_nblob = 0;
@@ -356,12 +323,7 @@ int main(void) {
 				}
 			}
 		}
-
-		// Cria uma matriz OpenCV para exibir a máscara
-		cv::Mat red_mask_mat(red_mask->height, red_mask->width, CV_8UC1, red_mask->data); \
-			
-			// Mostra a máscara em uma janela separada
-			cv::imshow("Red Mask", red_mask_mat);
+		copy_image(red_mask, coresjuntas);
 #pragma endregion
 
 // Região pra manipular a identificação da cor preto nas resistências
@@ -400,12 +362,7 @@ int main(void) {
 			}
 		}
 
-		// Cria uma matriz OpenCV para exibir a máscara preta
-		cv::Mat black_mask_mat(black_mask->height, black_mask->width, CV_8UC1, black_mask->data);
-
-		// Mostra a máscara preta em uma janela separada
-		cv::imshow("Black Mask", black_mask_mat);
-
+		copy_image(black_mask, coresjuntas);
 #pragma endregion
 
 // Região pra manipular a identificação da cor laranja nas resistências
@@ -442,14 +399,9 @@ int main(void) {
 				}
 			}
 		}
+		copy_image(orange_mask, coresjuntas);
 
-		// Cria uma matriz OpenCV para exibir a máscara
-		cv::Mat orange_mask_mat(orange_mask->height, orange_mask->width, CV_8UC1, orange_mask->data);
-
-		// Mostra a máscara em uma janela separada
-		cv::imshow("Orange Mask", orange_mask_mat);
 #pragma endregion
-
 
 // Região pra manipular a identificação da cor castanha nas resistências
 #pragma region Cor Castanho
@@ -486,12 +438,12 @@ int main(void) {
 				}
 			}
 		}
+		copy_image(brown_mask, coresjuntas);
+		IVC* teste = vc_image_new(image->width,image->height,1,255);
+		vc_binary_dilate(coresjuntas, teste, 3);
 
-		// Cria uma matriz OpenCV para exibir a máscara castanha
-		cv::Mat brown_mask_mat(brown_mask->height, brown_mask->width, CV_8UC1, brown_mask->data);
-
-		// Mostra a máscara castanha em uma janela separada
-		cv::imshow("Brown Mask", brown_mask_mat);
+		cv::Mat coresconjuntas(coresjuntas->height,coresjuntas->width, CV_8UC1, teste->data);
+		cv::imshow("Cores Juntas", coresconjuntas);
 #pragma endregion
 		// Exibe a frame
 		cv::imshow("VC - VIDEO", frame);
