@@ -338,6 +338,22 @@ int main(void) {
 						break;
 					}
 				}
+				for (int j = 0; j < nblobBlack; j++)
+				{
+					if (blobBlack[j].xc >= coresjuntas_blob[i].x && blobBlack[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) {
+						posicao_cores.push_back(std::make_pair(blobBlack[j].xc, 'bl'));
+						helper++;
+						break;
+					}
+				}
+				for (int j = 0; j < nblobBrown; j++)
+				{
+					if (blobBrown[j].xc >= coresjuntas_blob[i].x && blobBrown[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) {
+						posicao_cores.push_back(std::make_pair(blobBrown[j].xc, 'br'));
+						helper++;
+						break;
+					}
+				}
 				std::sort(posicao_cores.begin(), posicao_cores.end());
 				for (int j = 0; j < posicao_cores.size(); j++)
 				{
