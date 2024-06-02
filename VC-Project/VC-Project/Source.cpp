@@ -13,29 +13,29 @@ extern "C" {
 }
 
 bool compare(const int(&a)[2], const int(&b)[2]) {
-	return a[0] < b[0]; // Você pode ajustar a lógica de comparação conforme necessário
+	return a[0] < b[0]; // Vocï¿½ pode ajustar a lï¿½gica de comparaï¿½ï¿½o conforme necessï¿½rio
 }
 
 
-// Função vc_timer que mede e exibe o tempo decorrido entre chamadas consecutivas.
+// Funï¿½ï¿½o vc_timer que mede e exibe o tempo decorrido entre chamadas consecutivas.
 void vc_timer(void) {
 
-	// A variável "running" é um booleano que indica se o temporizador está em execução.
+	// A variï¿½vel "running" ï¿½ um booleano que indica se o temporizador estï¿½ em execuï¿½ï¿½o.
 	static bool running = false;
-	// A variável "previousTime" armazena o tempo do ponto anterior no tempo(quando a função foi chamada pela última vez).
+	// A variï¿½vel "previousTime" armazena o tempo do ponto anterior no tempo(quando a funï¿½ï¿½o foi chamada pela ï¿½ltima vez).
 	static std::chrono::steady_clock::time_point previousTime = std::chrono::steady_clock::now();
 
-	// Se running é false, significa que a função está sendo chamada pela primeira vez. A variável running é então definida como true para indicar que o temporizador está agora em execução.
+	// Se running ï¿½ false, significa que a funï¿½ï¿½o estï¿½ sendo chamada pela primeira vez. A variï¿½vel running ï¿½ entï¿½o definida como true para indicar que o temporizador estï¿½ agora em execuï¿½ï¿½o.
 	if (!running) {
 		running = true;
 	}
 	else {
-		//Tempo Atual: currentTime é capturado usando std::chrono::steady_clock::now()
+		//Tempo Atual: currentTime ï¿½ capturado usando std::chrono::steady_clock::now()
 		std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
-		//Tempo Decorrido: elapsedTime é a diferença entre currentTime e previousTime
+		//Tempo Decorrido: elapsedTime ï¿½ a diferenï¿½a entre currentTime e previousTime
 		std::chrono::steady_clock::duration elapsedTime = currentTime - previousTime;
 
-		// Conversão para Segundos: time_span converte elapsedTime para uma duração em segundos.
+		// Conversï¿½o para Segundos: time_span converte elapsedTime para uma duraï¿½ï¿½o em segundos.
 		std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(elapsedTime);
 		double nseconds = time_span.count();
 
@@ -45,16 +45,16 @@ void vc_timer(void) {
 	}
 }
 
-// Função main
+// Funï¿½ï¿½o main
 int main(void) {
 
-	// Variável inicializada com o nome do vídeo, este array é utilizado para armazenar o caminho/nome do arquivo de vídeo que será processado
+	// Variï¿½vel inicializada com o nome do vï¿½deo, este array ï¿½ utilizado para armazenar o caminho/nome do arquivo de vï¿½deo que serï¿½ processado
 	char videofile[20] = "video_resistors.mp4";
 
-	// Objeto para captura de vídeo, este objeto será utilizado para abrir, ler e manipular o vídeo especificado.
+	// Objeto para captura de vï¿½deo, este objeto serï¿½ utilizado para abrir, ler e manipular o vï¿½deo especificado.
 	cv::VideoCapture capture;
 
-	// Estrutura para armazenar informações do vídeo
+	// Estrutura para armazenar informaï¿½ï¿½es do vï¿½deo
 	struct
 	{
 		int width, height;
@@ -64,45 +64,45 @@ int main(void) {
 	} video;
 
 
-	// Outras variáveis que vão ser usadas mais á frente
+	// Outras variï¿½veis que vï¿½o ser usadas mais ï¿½ frente
 	std::string str;
 	int key = 0;
 
 
 
-	/* Leitura de vídeo de um ficheiro */
-	/* NOTA IMPORTANTE: O ficheiro video.avi deverá estar localizado no mesmo directório que o ficheiro de código fonte. */
+	/* Leitura de vï¿½deo de um ficheiro */
+	/* NOTA IMPORTANTE: O ficheiro video.avi deverï¿½ estar localizado no mesmo directï¿½rio que o ficheiro de cï¿½digo fonte. */
 
-	// Tenta abrir o arquivo de vídeo, e caso não consiga apresenta uma mensagem ao utilizador a informar o erro
+	// Tenta abrir o arquivo de vï¿½deo, e caso nï¿½o consiga apresenta uma mensagem ao utilizador a informar o erro
 	if (!capture.open(videofile)) {
-		std::cerr << "Erro ao abrir o ficheiro de vídeo!" << std::endl;
+		std::cerr << "Erro ao abrir o ficheiro de vï¿½deo!" << std::endl;
 		return -1;
 	}
 
-	/* Em alternativa, abrir captura de vídeo pela Webcam #0 */
+	/* Em alternativa, abrir captura de vï¿½deo pela Webcam #0 */
 	//capture.open(0, cv::CAP_DSHOW); // Pode-se utilizar apenas capture.open(0);
 
 
-	// Obtém o número total de frames  no vídeo 
+	// Obtï¿½m o nï¿½mero total de frames  no vï¿½deo 
 	video.ntotalframes = (int)capture.get(cv::CAP_PROP_FRAME_COUNT);
 
-	// Obtém a taxa de frames por segundo (fps) do vídeo
+	// Obtï¿½m a taxa de frames por segundo (fps) do vï¿½deo
 	video.fps = (int)capture.get(cv::CAP_PROP_FPS);
 
-	// Obtém a largura do vídeo em pixels
+	// Obtï¿½m a largura do vï¿½deo em pixels
 	video.width = (int)capture.get(cv::CAP_PROP_FRAME_WIDTH);
 
-	// Obtém a altura do vídeo em pixels
+	// Obtï¿½m a altura do vï¿½deo em pixels
 	video.height = (int)capture.get(cv::CAP_PROP_FRAME_HEIGHT);
 
-	// Cria uma janela para exibir o vídeo 
+	// Cria uma janela para exibir o vï¿½deo 
 	cv::namedWindow("VC - VIDEO", cv::WINDOW_AUTOSIZE);
 
-	// Inicia um temporizador para medir o tempo decorrido entre chamadas consecutivas, útil para monitorar o desempenho do processamento de vídeo
+	// Inicia um temporizador para medir o tempo decorrido entre chamadas consecutivas, ï¿½til para monitorar o desempenho do processamento de vï¿½deo
 	vc_timer();
 	//capture.set(cv::CAP_PROP_POS_FRAMES, 500);
 
-	// Declara uma matriz frame para armazenar cada frame do vídeo.
+	// Declara uma matriz frame para armazenar cada frame do vï¿½deo.
 	cv::Mat frame;
 
 	int contador = 0;
@@ -111,27 +111,27 @@ int main(void) {
 
 	std::string value_text;
 
-	// Inicia um loop que continua até que a tecla 'q' seja pressionada.
+	// Inicia um loop que continua atï¿½ que a tecla 'q' seja pressionada.
 	while (key != 'q') {
 
-		// Lê o próximo frame do vídeo e o armazena na matriz frame.
+		// Lï¿½ o prï¿½ximo frame do vï¿½deo e o armazena na matriz frame.
 		capture.read(frame);
 
-		// Verifica se conseguiu ler o frame , se o frame estiver vazio, indica que o vídeo chegou ao seu final ou houve algum erro na leitura.
+		// Verifica se conseguiu ler o frame , se o frame estiver vazio, indica que o vï¿½deo chegou ao seu final ou houve algum erro na leitura.
 		if (frame.empty()) break;
 
-		// Aplica um filtro de desfoque gaussiano ao frame. Isso suaviza a imagem, reduzindo o ruído e detalhes excessivos
+		// Aplica um filtro de desfoque gaussiano ao frame. Isso suaviza a imagem, reduzindo o ruï¿½do e detalhes excessivos
 		//cv::GaussianBlur(frame, frame, cv::Size(5, 5), 0);
 
 
-		// Obtém o índice da frame atual no vídeo utilizando o método get() do objeto capture. Ele retorna a posição atual do vídeo em termos de número de frames
+		// Obtï¿½m o ï¿½ndice da frame atual no vï¿½deo utilizando o mï¿½todo get() do objeto capture. Ele retorna a posiï¿½ï¿½o atual do vï¿½deo em termos de nï¿½mero de frames
 		video.nframe = (int)capture.get(cv::CAP_PROP_POS_FRAMES);
 
 
-		//Exemplo de inserção texto na frame, cria uma string com o texto "RESOLUCAO: ", converte a largura e altura do vídeo em pixels para uma string
+		//Exemplo de inserï¿½ï¿½o texto na frame, cria uma string com o texto "RESOLUCAO: ", converte a largura e altura do vï¿½deo em pixels para uma string
 		str = std::string("RESOLUCAO: ").append(std::to_string(video.width)).append("x").append(std::to_string(video.height));
 
-		//  Adiciona texto à frame do vídeo, e recebe como parametros, o frame onde vai ser inserido, a string a inserir, as coordenadas deste, tipo e tamanho da fonte, cor e espessura da linha do texto
+		//  Adiciona texto ï¿½ frame do vï¿½deo, e recebe como parametros, o frame onde vai ser inserido, a string a inserir, as coordenadas deste, tipo e tamanho da fonte, cor e espessura da linha do texto
 		cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
 		cv::putText(frame, str, cv::Point(20, 25), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
 		str = std::string("TOTAL DE FRAMES: ").append(std::to_string(video.ntotalframes));
@@ -143,63 +143,63 @@ int main(void) {
 		str = std::string("N. DA FRAME: ").append(std::to_string(video.nframe));
 		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 0), 2);
 		cv::putText(frame, str, cv::Point(20, 100), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 1);
-		/* Mesmo processo de adição de texto até aqui */
+		/* Mesmo processo de adiï¿½ï¿½o de texto atï¿½ aqui */
 
 
-		/*Código abaixo cria várias imagens IVC para armazenar diferentes tipos de segmentações de imagem. Cada imagem IVC é uma estrutura de dados que contém informações sobre a imagem, como largura,
-		altura, número de canais de cor e o próprio buffer de pixels. */
+		/*Cï¿½digo abaixo cria vï¿½rias imagens IVC para armazenar diferentes tipos de segmentaï¿½ï¿½es de imagem. Cada imagem IVC ï¿½ uma estrutura de dados que contï¿½m informaï¿½ï¿½es sobre a imagem, como largura,
+		altura, nï¿½mero de canais de cor e o prï¿½prio buffer de pixels. */
 		
-		// Cria uma imagem colorida com 3 canais de cor (RGB) e alocada com 255 bytes para cada canal, ou seja, 24 bits por pixel (8 bits por canal). Esta imagem é destinada a armazenar frames de vídeo.
+		// Cria uma imagem colorida com 3 canais de cor (RGB) e alocada com 255 bytes para cada canal, ou seja, 24 bits por pixel (8 bits por canal). Esta imagem ï¿½ destinada a armazenar frames de vï¿½deo.
 		IVC* image = vc_image_new(video.width, video.height, 3, 255);
 		IVC* image_2 = vc_image_new(video.width, video.height, 3, 255);
 		IVC* image_3 = vc_image_new(video.width, video.height, 3, 255);
 
-		// Cria uma imagem em escala de cinza com apenas um canal de cor (nível de cinza) e alocada com 255 bytes para o canal, ou seja, 8 bits por pixel.
+		// Cria uma imagem em escala de cinza com apenas um canal de cor (nï¿½vel de cinza) e alocada com 255 bytes para o canal, ou seja, 8 bits por pixel.
 		IVC* image_4 = vc_image_new(video.width, video.height, 1, 255);
 		IVC* image_5 = vc_image_new(video.width, video.height, 1, 255);
 
-		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels vermelhos.
+		// Cria uma imagem em escala de cinza para armazenar a segmentaï¿½ï¿½o de pixels vermelhos.
 		IVC* red_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
 
-		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels castanhos
+		// Cria uma imagem em escala de cinza para armazenar a segmentaï¿½ï¿½o de pixels castanhos
 		IVC* brown_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
-		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels pretos
+		// Cria uma imagem em escala de cinza para armazenar a segmentaï¿½ï¿½o de pixels pretos
 		IVC* black_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
 
-		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels laranjas
+		// Cria uma imagem em escala de cinza para armazenar a segmentaï¿½ï¿½o de pixels laranjas
 		IVC* orange_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
 
-		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels verdes
+		// Cria uma imagem em escala de cinza para armazenar a segmentaï¿½ï¿½o de pixels verdes
 		IVC* green_segmented_image = vc_image_new(video.width, video.height, 1, 255);  
 
-		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels azuis
+		// Cria uma imagem em escala de cinza para armazenar a segmentaï¿½ï¿½o de pixels azuis
 		IVC* blue_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
 
 		IVC* coresjuntas = vc_image_new(video.width, video.height, 1, 255);
-		// Guarda a memória da imagem, copia os dados de pixels da frame do vídeo para a imagem image_2, permitindo que ela contenha o conteúdo visual da frame atual do vídeo
+		// Guarda a memï¿½ria da imagem, copia os dados de pixels da frame do vï¿½deo para a imagem image_2, permitindo que ela contenha o conteï¿½do visual da frame atual do vï¿½deo
 		memcpy(image_2->data, frame.data, video.width* video.height * 3);
 
 
-		//  Esta função converte a codificação de cores da imagem image_2 de BGR (azul-verde-vermelho) para RGB (vermelho-verde-azul).
+		//  Esta funï¿½ï¿½o converte a codificaï¿½ï¿½o de cores da imagem image_2 de BGR (azul-verde-vermelho) para RGB (vermelho-verde-azul).
 		vc_convert_bgr_to_rgb(image_2, image_2); 
 
 
-		// Copia os dados do quadro de vídeo (frame) para a estrutura de imagem (image_2)
-		// O tamanho dos dados copiados é calculado multiplicando a largura, altura e 3 (bytes por pixel)
+		// Copia os dados do quadro de vï¿½deo (frame) para a estrutura de imagem (image_2)
+		// O tamanho dos dados copiados ï¿½ calculado multiplicando a largura, altura e 3 (bytes por pixel)
 		memcpy(image_2->data, frame.data, video.width * video.height * 3);
 
 
-		// Converte a codificação de cores BGR (Azul-Verde-Vermelho) para RGB (Vermelho-Verde-Azul)
-		// Os dados da imagem são convertidos diretamente na estrutura image_2
+		// Converte a codificaï¿½ï¿½o de cores BGR (Azul-Verde-Vermelho) para RGB (Vermelho-Verde-Azul)
+		// Os dados da imagem sï¿½o convertidos diretamente na estrutura image_2
 		vc_convert_bgr_to_rgb(image_2, image_2);
 
 
-		// Converte a codificação de cores RGB para HSV (Matiz-Saturação-Valor)
-		// O resultado da conversão é armazenado na estrutura image_3
+		// Converte a codificaï¿½ï¿½o de cores RGB para HSV (Matiz-Saturaï¿½ï¿½o-Valor)
+		// O resultado da conversï¿½o ï¿½ armazenado na estrutura image_3
 		vc_rgb_to_hsv(image_2, image_3);
 
-// Região pra manipular a cor das resistências
-#pragma region Cor das Resistências
+// Regiï¿½o pra manipular a cor das resistï¿½ncias
+#pragma region Cor das Resistï¿½ncias
 
 		vc_hsv_segmentation(image_3, image_4, 25, 43, 32, 63, 44, 86);
 
@@ -215,7 +215,7 @@ int main(void) {
 
 
 
-// Região pra manipular a identificação da cor verde nas resistências
+// Regiï¿½o pra manipular a identificaï¿½ï¿½o da cor verde nas resistï¿½ncias
 #pragma region Cor Verde
 		vc_hsv_segmentation(image_3, green_segmented_image, 85, 105, 33, 53, 35, 57); 
 		OVC* blobGreen = nullptr;
@@ -226,7 +226,7 @@ int main(void) {
 		copy_image(green_segmented_image, coresjuntas);
 #pragma endregion
 
-// Região pra manipular a identificação da cor azul nas resistências
+// Regiï¿½o pra manipular a identificaï¿½ï¿½o da cor azul nas resistï¿½ncias
 #pragma region Cor Azul
 		vc_hsv_segmentation(image_3, blue_segmented_image, 110, 200, 14, 45, 32, 45);
 		OVC* blobBlue = nullptr;
@@ -237,9 +237,9 @@ int main(void) {
 		copy_image(blue_segmented_image, coresjuntas);
 #pragma endregion
 
-// Região pra manipular a identificação da cor vermelha nas resistências
+// Regiï¿½o pra manipular a identificaï¿½ï¿½o da cor vermelha nas resistï¿½ncias
 #pragma region Cor Vermelha
-		// Segmentação HSV para a cor vermelha
+		// Segmentaï¿½ï¿½o HSV para a cor vermelha
 		vc_hsv_segmentation(image_3, red_segmented_image, 0, 11, 45, 69, 55, 89);
 		OVC* blobRed = nullptr;
 		int nblobRed = 0;
@@ -249,9 +249,9 @@ int main(void) {
 		copy_image(red_segmented_image, coresjuntas);
 #pragma endregion
 
-// Região pra manipular a identificação da cor preto nas resistências
+// Regiï¿½o pra manipular a identificaï¿½ï¿½o da cor preto nas resistï¿½ncias
 #pragma region Cor Preto
-		// Segmentação HSV para a cor preta
+		// Segmentaï¿½ï¿½o HSV para a cor preta
 		vc_hsv_segmentation(image_3, black_segmented_image, 40, 210, 4, 38, 20, 35);
 		OVC* blobBlack = nullptr;
 		int nblobBlack = 0;
@@ -261,9 +261,9 @@ int main(void) {
 		copy_image(black_segmented_image, coresjuntas);
 #pragma endregion
 
-// Região pra manipular a identificação da cor laranja nas resistências
+// Regiï¿½o pra manipular a identificaï¿½ï¿½o da cor laranja nas resistï¿½ncias
 #pragma region Cor Laranja
-		// Segmentação HSV para a cor laranja
+		// Segmentaï¿½ï¿½o HSV para a cor laranja
 		vc_hsv_segmentation(image_3, orange_segmented_image,12, 16, 65, 80, 70, 93);
 		OVC* blobOrange = nullptr;
 		int nblobOrange = 0;
@@ -273,9 +273,9 @@ int main(void) {
 		copy_image(orange_segmented_image, coresjuntas);
 #pragma endregion
 
-// Região pra manipular a identificação da cor castanha nas resistências
+// Regiï¿½o pra manipular a identificaï¿½ï¿½o da cor castanha nas resistï¿½ncias
 #pragma region Cor Castanho
-		// Segmentação HSV para a cor castanho
+		// Segmentaï¿½ï¿½o HSV para a cor castanho
 		vc_hsv_segmentation(image_3, brown_segmented_image, 11, 26, 26, 46, 30, 50);
 		OVC* blobBrown = nullptr;
 		int nblobBrown = 0;
@@ -305,12 +305,12 @@ int main(void) {
 			int cores[2];
 			std::vector<std::tuple<int, int, char>> posicao_cores;
 			int helper = 0;
-			// Verifica se o blob é significativo para evitar ruídos pequenos
+			// Verifica se o blob ï¿½ significativo para evitar ruï¿½dos pequenos
 			if (coresjuntas_blob[i].area > 4000 && coresjuntas_blob[i].width > 150 && coresjuntas_blob[i].height < 90) {
 				cv::rectangle(frame, cv::Point(coresjuntas_blob[i].x, coresjuntas_blob[i].y), cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width, coresjuntas_blob[i].y + coresjuntas_blob[i].height), cv::Scalar(0, 0, 255), 2);
 				cv::circle(frame, cv::Point(coresjuntas_blob[i].xc, coresjuntas_blob[i].yc), 5, cv::Scalar(0, 0, 255), -1);
 				int area = coresjuntas_blob[i].area * (coresjuntas_blob[i].width / (double)coresjuntas2->width) * (coresjuntas_blob[i].height / (double)coresjuntas2->height);
-				// Mostrar área ao lado da bounding box
+				// Mostrar ï¿½rea ao lado da bounding box
 				std::string area_text = "Area: " + std::to_string(area);
 				//std::string altura_text = "Altura: " + std::to_string(coresjuntas_blob[i].height);
 				cv::putText(frame, area_text, cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width + 5, coresjuntas_blob[i].y + 15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
@@ -457,7 +457,7 @@ int main(void) {
 		// Exibe a frame
 		cv::imshow("VC - VIDEO", frame);
 
-		// Sai da aplicação, se o utilizador premir a tecla 'q'
+		// Sai da aplicaï¿½ï¿½o, se o utilizador premir a tecla 'q'
 		key = cv::waitKey(1);
 	}
 
@@ -467,7 +467,7 @@ int main(void) {
 	/* Fecha a janela */
 	cv::destroyWindow("VC - VIDEO");
 
-	/* Fecha o ficheiro de vídeo */
+	/* Fecha o ficheiro de vï¿½deo */
 	capture.release();
 
 	return 0;
