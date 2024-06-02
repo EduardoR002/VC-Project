@@ -12,9 +12,10 @@ extern "C" {
 #include "vc.h"
 }
 
-struct Blob {
-	int x, y, width, height;
-};
+bool compare(const int(&a)[2], const int(&b)[2]) {
+	return a[0] < b[0]; // Você pode ajustar a lógica de comparação conforme necessário
+}
+
 
 // Função vc_timer que mede e exibe o tempo decorrido entre chamadas consecutivas.
 void vc_timer(void) {
@@ -105,7 +106,10 @@ int main(void) {
 	cv::Mat frame;
 
 	int contador = 0;
-	std::vector<Blob> blobs_detectados;
+
+	int ultimoy = 0;
+
+	std::string value_text;
 
 	// Inicia um loop que continua até que a tecla 'q' seja pressionada.
 	while (key != 'q') {
@@ -260,7 +264,7 @@ int main(void) {
 // Região pra manipular a identificação da cor laranja nas resistências
 #pragma region Cor Laranja
 		// Segmentação HSV para a cor laranja
-		vc_hsv_segmentation(image_3, orange_segmented_image,6, 10, 65, 80, 70, 93);
+		vc_hsv_segmentation(image_3, orange_segmented_image,12, 16, 65, 80, 70, 93);
 		OVC* blobOrange = nullptr;
 		int nblobOrange = 0;
 		IVC* orangeBlobImage = vc_image_new(video.width, video.height, 1, 255);
@@ -294,10 +298,12 @@ int main(void) {
 		IVC* coresjuntas2 = vc_image_new(image->width, image->height, 1, 255);
 		coresjuntas_blob = vc_binary_blob_labelling(coresjuntasD, coresjuntas2, &coresjuntas_nblob);
 		vc_binary_blob_info(coresjuntas2, coresjuntas_blob, coresjuntas_nblob);
+		
 
 		for (int i = 0; i < coresjuntas_nblob; i++) {
+			int positiony = 0;
 			int cores[2];
-			std::vector<std::pair<int, char>> posicao_cores;
+			std::vector<std::tuple<int, int, char>> posicao_cores;
 			int helper = 0;
 			// Verifica se o blob é significativo para evitar ruídos pequenos
 			if (coresjuntas_blob[i].area > 4000 && coresjuntas_blob[i].width > 150 && coresjuntas_blob[i].height < 90) {
@@ -314,18 +320,20 @@ int main(void) {
 				{
 					contador++;
 				}
-				for (int j = 0; j < nblobGreen; j++)
+				for (int j = 0; j < nblobOrange; j++)
 				{
-					if (blobGreen[j].xc >= coresjuntas_blob[i].x && blobGreen[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) {
-						posicao_cores.push_back(std::make_pair(blobGreen[j].xc, 'g'));
+					if (blobOrange[j].xc >= coresjuntas_blob[i].x && blobOrange[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) {
+						posicao_cores.emplace_back(blobOrange[j].xc, blobOrange[j].yc, 'o');
+						positiony = blobOrange[j].yc;
 						helper++;
 						break;
 					}
 				}
-				for (int j = 0; j < nblobBlue; j++)
+				for (int j = 0; j < nblobGreen; j++)
 				{
-					if (blobBlue[j].xc >= coresjuntas_blob[i].x && blobBlue[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) {
-						posicao_cores.push_back(std::make_pair(blobBlue[j].xc, 'b'));
+					if (blobGreen[j].xc >= coresjuntas_blob[i].x && blobGreen[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) {
+						posicao_cores.emplace_back(blobGreen[j].xc, blobGreen[j].yc, 'g');
+						positiony = blobGreen[j].yc;
 						helper++;
 						break;
 					}
@@ -333,17 +341,47 @@ int main(void) {
 				for (int j = 0; j < nblobRed; j++)
 				{
 					if (blobRed[j].xc >= coresjuntas_blob[i].x && blobRed[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) { 
-						posicao_cores.push_back(std::make_pair(blobRed[j].xc, 'r')); 
+						posicao_cores.emplace_back(blobRed[j].xc, blobRed[j].yc, 'r');
+						positiony = blobRed[j].yc;
 						helper++; 
 						break;
 					}
 				}
-				std::sort(posicao_cores.begin(), posicao_cores.end());
+				for (int j = 0; j < nblobBrown; j++)
+				{
+					if (blobBrown[j].xc >= coresjuntas_blob[i].x && blobBrown[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) {
+						posicao_cores.emplace_back(blobBrown[j].xc, blobBrown[j].yc, 'br');
+						positiony = blobBrown[j].yc;
+						helper++;
+						break;
+					}
+				}
+				for (int j = 0; j < nblobBlack; j++)
+				{
+					if (blobBlack[j].xc >= coresjuntas_blob[i].x && blobBlack[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) {
+						posicao_cores.emplace_back(blobBlack[j].xc, blobBlack[j].yc,'bl');
+						positiony = blobBlack[j].yc;
+						helper++;
+						break;
+					}
+				}
+				for (int j = 0; j < nblobBlue; j++)
+				{
+					if (blobBlue[j].xc >= coresjuntas_blob[i].x && blobBlue[j].xc <= (coresjuntas_blob[i].x + coresjuntas_blob[i].width)) {
+						posicao_cores.emplace_back(blobBlue[j].xc, blobBlue[j].yc,'b');
+						positiony = blobBlue[j].yc;
+						helper++;
+						break;
+					}
+				}
+				std::sort(posicao_cores.begin(), posicao_cores.end(), [](const std::tuple<int, int, char>& a, const std::tuple<int, int, char>& b) {
+					return std::get<0>(a) < std::get<0>(b);
+					});
 				for (int j = 0; j < posicao_cores.size(); j++)
 				{
 					if (j != 2)
 					{
-						switch (posicao_cores[j].second) {
+						switch (std::get<2>(posicao_cores[j])) {
 						case 'g':
 							cores[j] = 5;
 							break;
@@ -353,12 +391,21 @@ int main(void) {
 						case 'r':
 							cores[j] = 7;
 							break;
+						case 'br':
+							cores[j] = 1;
+							break;
+						case 'bl':
+							cores[j] = 0;
+							break;
+						case 'o':
+							cores[j] = 3;
+							break;
 						default:
 							break;
 						}
 					}
 					else {
-						switch (posicao_cores[j].second) {
+						switch (std::get<2>(posicao_cores[j])) {
 						case 'g':
 							cores[j] = 100000;
 							break;
@@ -368,6 +415,14 @@ int main(void) {
 						case 'r':
 							cores[j] = 100;
 							break;
+						case 'br':
+							cores[j] = 10;
+							break;
+						case 'bl':
+							cores[j] = 1;
+							break;
+						case 'o':
+							cores[j] = 1000;
 						default:
 							break;
 						}
@@ -375,11 +430,22 @@ int main(void) {
 				}
 				if (posicao_cores.size() != 0)
 				{
-					std::string val_str = std::to_string(cores[0]) + std::to_string(cores[1]);
-					int value = std::stoi(val_str) * cores[2];
-					std::string value_text = "Valor: " + std::to_string(value);
-					cv::putText(frame, value_text, cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width + 5, coresjuntas_blob[i].y + 50), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 0, 255), 2);
+					if (ultimoy == 0)
+					{
+						ultimoy = positiony;
+						std::string val_str = std::to_string(cores[0]) + std::to_string(cores[1]);
+						int value = std::stoi(val_str) * cores[2];
+						value_text = "Valor: " + std::to_string(value);	
+					}
+					else if(abs(ultimoy - positiony) > 500)
+					{
+						ultimoy = positiony;
+						std::string val_str = std::to_string(cores[0]) + std::to_string(cores[1]);
+						int value = std::stoi(val_str) * cores[2];
+						value_text = "Valor: " + std::to_string(value);
+					}
 				}
+				cv::putText(frame, value_text, cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width + 5, coresjuntas_blob[i].y + 50), cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 0, 255), 2);
 			}
 			
 		}
