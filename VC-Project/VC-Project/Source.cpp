@@ -473,15 +473,6 @@ int main(void) {
 
 		// Sai da aplicação, se o utilizador premir a tecla 'q'
 		key = cv::waitKey(1);
-
-
-		// Imagens libertadas da memória
-		
-		
-		
-		
-		
-
 	}
 
 	/* Exibe o tempo decorrido */
