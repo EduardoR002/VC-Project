@@ -150,13 +150,11 @@ int main(void) {
 		altura, número de canais de cor e o próprio buffer de pixels. */
 		
 		// Cria uma imagem colorida com 3 canais de cor (RGB) e alocada com 255 bytes para cada canal, ou seja, 24 bits por pixel (8 bits por canal). Esta imagem é destinada a armazenar frames de v�deo.
-		IVC* image = vc_image_new(video.width, video.height, 3, 255);
 		IVC* image_2 = vc_image_new(video.width, video.height, 3, 255);
 		IVC* image_3 = vc_image_new(video.width, video.height, 3, 255);
 
 		// Cria uma imagem em escala de cinza com apenas um canal de cor (nível de cinza) e alocada com 255 bytes para o canal, ou seja, 8 bits por pixel.
 		IVC* image_4 = vc_image_new(video.width, video.height, 1, 255);
-		IVC* image_5 = vc_image_new(video.width, video.height, 1, 255);
 
 		// Cria uma imagem em escala de cinza para armazenar a segmentação de pixels vermelhos.
 		IVC* red_segmented_image = vc_image_new(video.width, video.height, 1, 255); 
@@ -190,19 +188,16 @@ int main(void) {
 		// Converte a codificação de cores RGB para HSV (Matiz-Saturaçãoo-Valor)
 		// O resultado da conversação é armazenado na estrutura image_3
 		vc_rgb_to_hsv(image_2, image_3);
+		vc_image_free(image_2);
 
 // Região pra manipular a cor das resistências
 #pragma region Cor das Resistências
-
 		// Segmentação da imagem com abse nas cores da resitência
 		vc_hsv_segmentation(image_3, image_4, 25, 43, 32, 63, 44, 86);
-
 		// copia ara o coresjuntas
 		copy_image(image_4, coresjuntas);
-
-
+		vc_image_free(image_4);
 #pragma endregion
-
 
 // Região pra manipular a identificação da cor verde nas resistências
 #pragma region Cor Verde
@@ -210,15 +205,13 @@ int main(void) {
 		OVC* blobGreen = nullptr;
 		int nblobGreen = 0;
 		IVC* greenBlobImage = vc_image_new(video.width, video.height, 1, 255);
-
 		// Verifica os blobs na imagem desta cor e faz a etiquetagem dos blobs
 		blobGreen = vc_binary_blob_labelling(green_segmented_image, greenBlobImage, &nblobGreen); 
-
 		// Obter informações sobre os blobs rotulados
 		vc_binary_blob_info (greenBlobImage, blobGreen, nblobGreen);
-
-
+		vc_image_free(greenBlobImage);
 		copy_image(green_segmented_image, coresjuntas);
+		vc_image_free(green_segmented_image);
 #pragma endregion
 
 // Região pra manipular a identificação da cor azul nas resistências
@@ -229,7 +222,9 @@ int main(void) {
 		IVC* blueBlobImage = vc_image_new(video.width, video.height, 1, 255);
 		blobBlue = vc_binary_blob_labelling(blue_segmented_image, blueBlobImage, &nblobBlue);
 		vc_binary_blob_info(blueBlobImage, blobBlue, nblobBlue);
+		vc_image_free(blueBlobImage);
 		copy_image(blue_segmented_image, coresjuntas);
+		vc_image_free(blue_segmented_image);
 #pragma endregion
 
 // Região pra manipular a identificação da cor vermelha nas resistências
@@ -241,7 +236,9 @@ int main(void) {
 		IVC* redBlobImage = vc_image_new(video.width, video.height, 1, 255);
 		blobRed = vc_binary_blob_labelling(red_segmented_image, redBlobImage, & nblobRed);
 		vc_binary_blob_info(redBlobImage, blobRed, nblobRed);
+		vc_image_free(redBlobImage);
 		copy_image(red_segmented_image, coresjuntas);
+		vc_image_free(red_segmented_image);
 #pragma endregion
 
 // Região pra manipular a identificação da cor preto nas resistências
@@ -253,7 +250,9 @@ int main(void) {
 		IVC* blackBlobImage = vc_image_new(video.width, video.height, 1, 255);
 		blobBlack = vc_binary_blob_labelling(black_segmented_image, blackBlobImage, &nblobBlack);
 		vc_binary_blob_info(blackBlobImage, blobBlack, nblobBlack);
+		vc_image_free(blackBlobImage);
 		copy_image(black_segmented_image, coresjuntas);
+		vc_image_free(black_segmented_image);
 #pragma endregion
 
 // Região pra manipular a identificação da cor laranja nas resistências
@@ -265,38 +264,43 @@ int main(void) {
 		IVC* orangeBlobImage = vc_image_new(video.width, video.height, 1, 255);
 		blobOrange = vc_binary_blob_labelling(orange_segmented_image, orangeBlobImage, &nblobOrange);
 		vc_binary_blob_info(orangeBlobImage, blobOrange, nblobOrange);
+		vc_image_free(orangeBlobImage);
 		copy_image(orange_segmented_image, coresjuntas);
+		vc_image_free(orange_segmented_image);
 #pragma endregion
 
 // Regi�o pra manipular a identificação da cor castanha nas resistências
 #pragma region Cor Castanho
 		// Segmentaçãoo HSV para a cor castanho
 		vc_hsv_segmentation(image_3, brown_segmented_image, 11, 26, 26, 46, 30, 50);
+		vc_image_free(image_3);
 		OVC* blobBrown = nullptr;
 		int nblobBrown = 0;
 		IVC* brownBlobImage = vc_image_new(video.width, video.height, 1, 255);
 		blobBrown = vc_binary_blob_labelling(brown_segmented_image, brownBlobImage, &nblobBrown);
 		vc_binary_blob_info(brownBlobImage, blobBrown, nblobBrown);
+		vc_image_free(brownBlobImage);
 		copy_image(brown_segmented_image, coresjuntas);
+		vc_image_free(brown_segmented_image);
 #pragma endregion
 
 		//cv::morphologyEx(coresconjuntas, coresconjuntas, cv::MORPH_CLOSE, cv::Mat(), cv::Point(-1, -1), 2);
-		IVC* coresjuntasD = vc_image_new(image->width, image->height, 1, 255);
+		IVC* coresjuntasD = vc_image_new(video.width, video.height, 1, 255);
 
 		//vc_binary_dilate(coresjuntas, coresjuntasD, 7);
 		vc_binary_open(coresjuntas, coresjuntasD, 1, 7);
-
+		vc_image_free(coresjuntas);
 		//cv::Mat coresconjuntas(coresjuntasD->height, coresjuntasD->width, CV_8UC1, coresjuntasD->data);
 		//cv::imshow("Cores Juntas", coresconjuntas);
 
 		// Etiquetagem de blobs na imagem fechada
 		OVC* coresjuntas_blob = nullptr;
 		int coresjuntas_nblob = 0;
-		IVC* coresjuntas2 = vc_image_new(image->width, image->height, 1, 255);
+		IVC* coresjuntas2 = vc_image_new(video.width, video.height, 1, 255);
 
 		coresjuntas_blob = vc_binary_blob_labelling(coresjuntasD, coresjuntas2, &coresjuntas_nblob);
 		vc_binary_blob_info(coresjuntas2, coresjuntas_blob, coresjuntas_nblob);
-		
+		vc_image_free(coresjuntasD);
 
 		// percorre o número de blobs encontrados no video todo
 		for (int i = 0; i < coresjuntas_nblob; i++) {
@@ -306,14 +310,17 @@ int main(void) {
 			int helper = 0;
 
 			// Verifica se o blob é significativo para evitar ruídos pequenos
-			if (coresjuntas_blob[i].area > 4000 && coresjuntas_blob[i].width > 150 && coresjuntas_blob[i].height < 90 && coresjuntas_blob[i].height > 40) {
+			if (coresjuntas_blob[i].area > 4000 && coresjuntas_blob[i].width > 120 && coresjuntas_blob[i].height < 81) {
 				cv::rectangle(frame, cv::Point(coresjuntas_blob[i].x, coresjuntas_blob[i].y), cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width, coresjuntas_blob[i].y + coresjuntas_blob[i].height), cv::Scalar(0, 0, 255), 2);
 				cv::circle(frame, cv::Point(coresjuntas_blob[i].xc, coresjuntas_blob[i].yc), 5, cv::Scalar(0, 0, 255), -1);
 				int area = coresjuntas_blob[i].area * (coresjuntas_blob[i].width / (double)coresjuntas2->width) * (coresjuntas_blob[i].height / (double)coresjuntas2->height);
 				// Mostrar �rea ao lado da bounding box
 				std::string area_text = "Area: " + std::to_string(area);
-				std::string altura_text = "Altura: " + std::to_string(coresjuntas_blob[i].height);
-				std::cout << altura_text << std::endl;
+				/*if (coresjuntas_blob[i].y < 100)
+				{
+					std::string altura_text = "Altura: " + std::to_string(coresjuntas_blob[i].height) + "			LarguraN: " + std::to_string(coresjuntas_blob[i].width);
+					std::cout << altura_text << std::endl;
+				}*/
 				cv::putText(frame, area_text, cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width + 5, coresjuntas_blob[i].y + 15), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
 				//cv::putText(frame, altura_text, cv::Point(coresjuntas_blob[i].x + coresjuntas_blob[i].width + 5, coresjuntas_blob[i].y + 40), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255), 1);	
 
@@ -469,26 +476,11 @@ int main(void) {
 
 
 		// Imagens libertadas da memória
-		vc_image_free(image);
-		vc_image_free(image_2);
-		vc_image_free(image_3);
-		vc_image_free(image_4);
-		vc_image_free(image_5);
-		vc_image_free(red_segmented_image);
-		vc_image_free(black_segmented_image);
-		vc_image_free(brown_segmented_image);
-		vc_image_free(green_segmented_image);
-		vc_image_free(orange_segmented_image);
-		vc_image_free(blue_segmented_image);
-		vc_image_free(coresjuntas);
-		vc_image_free(coresjuntasD);
-		vc_image_free(greenBlobImage);
-		vc_image_free(blueBlobImage);
-		vc_image_free(redBlobImage);
-		vc_image_free(brownBlobImage);
-		vc_image_free(orangeBlobImage);
-		vc_image_free(blackBlobImage);
-		vc_image_free(coresjuntas2);
+		
+		
+		
+		
+		
 
 	}
 
